@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan de Prévention — ATTILA</title>
+<style>
+  :root{
+    --rouge:#C0392B; --rouge-fonce:#96281B; --encre:#1e2226;
+    --gris:#5c646b; --ligne:#d8dcdf; --fond-doux:#faf9f7; --ok:#1e7a45;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Calibri,'Segoe UI',Arial,sans-serif;color:var(--encre);background:#fff;font-size:15px;line-height:1.45}
+  h1,h2,h3,.cartouche-titre{font-family:Cambria,Georgia,serif}
+
+  .bandeau{background:var(--rouge);color:#fff;padding:18px 22px 16px}
+  .bandeau .marque{font-family:Calibri,sans-serif;font-weight:700;letter-spacing:.28em;font-size:13px;text-transform:uppercase;opacity:.92}
+  .bandeau h1{font-size:26px;font-weight:700;margin-top:4px;line-height:1.15}
+  .bandeau .ref{font-size:12.5px;opacity:.85;margin-top:6px}
+  .cadre-legal{background:var(--fond-doux);border-bottom:1px solid var(--ligne);padding:10px 22px;font-size:12.5px;color:var(--gris)}
+  .cadre-legal strong{color:var(--encre)}
+
+  main{max-width:880px;margin:0 auto;padding:8px 18px 60px}
+  section{margin-top:26px;border:1px solid var(--ligne);border-radius:6px;overflow:hidden}
+  .cartouche-titre{background:var(--encre);color:#fff;padding:9px 14px;font-size:15.5px;font-weight:700;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .cartouche-titre .num{color:var(--rouge);background:#fff;border-radius:3px;font-family:Calibri,sans-serif;font-size:12px;font-weight:700;padding:1px 7px;letter-spacing:.05em}
+  .corps{padding:14px}
+  .grille{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:640px){.grille{grid-template-columns:1fr}}
+
+  label{display:block;font-size:12.5px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+  input[type=text],input[type=email],input[type=date],input[type=time],textarea,select{
+    width:100%;padding:8px 10px;border:1px solid var(--ligne);border-radius:4px;font:inherit;background:#fff}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--rouge);outline-offset:1px;border-color:var(--rouge)}
+  textarea{resize:vertical;min-height:60px}
+  .champ{margin-bottom:12px}
+  .aide{font-size:12px;color:var(--gris);margin-top:3px}
+  fieldset{border:none}
+  .colonne-entete{font-family:Cambria,serif;font-size:14px;font-weight:700;color:var(--rouge);border-bottom:2px solid var(--rouge);padding-bottom:4px;margin-bottom:10px}
+
+  .risque{border:1px solid var(--ligne);border-left:4px solid var(--ligne);border-radius:4px;padding:10px 12px;margin-bottom:10px;background:var(--fond-doux);transition:border-color .15s,background .15s}
+  .risque.actif{border-left-color:var(--rouge);background:#fff}
+  .risque-tete{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+  .risque-tete input{width:18px;height:18px;margin-top:2px;accent-color:var(--rouge);flex-shrink:0}
+  .risque-tete .titre{font-weight:700;font-size:15px}
+  .risque-detail{display:none;margin-top:10px;font-size:13.5px}
+  .risque.actif .risque-detail{display:block}
+  .rap{display:grid;grid-template-columns:110px 1fr;gap:4px 10px;margin-top:4px}
+  .rap dt{font-weight:700;color:var(--rouge);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  .rap dd{color:var(--encre)}
+  .verrou{font-size:11.5px;color:var(--gris);margin-top:8px;font-style:italic}
+  .risque-icone{flex-shrink:0;width:32px;height:32px;margin-top:-2px}
+  .risque-icone svg{width:32px;height:32px;display:block}
+  .panneau-rangee{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;justify-content:flex-start}
+  .panneau{text-align:center;font-size:11px;font-weight:700;color:var(--gris);width:76px;text-transform:uppercase;letter-spacing:.03em}
+  .panneau svg{width:62px;height:62px;display:block;margin:0 auto 5px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))}
+  .scene{width:100%;max-width:440px;display:block;margin:12px 0 0;background:#fff;border:1px solid var(--ligne);border-radius:6px}
+  .scene-legende{font-size:11.5px;color:var(--gris);margin-top:4px;font-style:italic}
+
+  .ligne-client{border:1px solid var(--ligne);border-left:4px solid var(--encre);border-radius:4px;padding:12px;margin-bottom:12px;position:relative}
+  .ligne-client .suppr{position:absolute;top:8px;right:8px;background:none;border:1px solid var(--ligne);border-radius:4px;color:var(--gris);cursor:pointer;font-size:12px;padding:3px 8px}
+  .ligne-client .suppr:hover{color:var(--rouge);border-color:var(--rouge)}
+  .mesure{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+  .mesure textarea{min-height:44px}
+  .mesure .suppr-mesure{background:none;border:1px solid var(--ligne);border-radius:4px;color:var(--gris);cursor:pointer;font-size:12px;padding:3px 8px;flex-shrink:0;margin-top:2px}
+  .mesure .suppr-mesure:hover{color:var(--rouge);border-color:var(--rouge)}
+  .btn-ajout{background:#fff;border:1.5px dashed var(--rouge);color:var(--rouge);font-weight:700;font-size:14px;border-radius:5px;padding:10px 16px;cursor:pointer;width:100%}
+  .btn-ajout:hover{background:#fdf3f2}
+  .btn-ajout.secondaire{border-style:solid;border-width:1px;font-weight:400;font-size:13px;padding:7px 12px;width:auto}
+
+  .photos-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:12px}
+  .photo-vignette{position:relative;border:1px solid var(--ligne);border-radius:4px;overflow:hidden}
+  .photo-vignette img{width:100%;height:90px;object-fit:cover;display:block}
+  .photo-vignette input{border:none;border-top:1px solid var(--ligne);border-radius:0;font-size:11.5px;padding:4px 6px}
+  .photo-vignette .suppr-photo{position:absolute;top:4px;right:4px;background:rgba(30,34,38,.75);color:#fff;border:none;border-radius:3px;cursor:pointer;font-size:11px;padding:2px 6px}
+
+  .sig-bloc{border:1px solid var(--ligne);border-radius:5px;padding:12px;background:var(--fond-doux)}
+  canvas.signature{width:100%;height:150px;background:#fff;border:1px solid var(--ligne);border-radius:4px;touch-action:none;cursor:crosshair;display:block}
+  .sig-actions{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+  .sig-effacer{background:none;border:none;color:var(--gris);text-decoration:underline;cursor:pointer;font-size:12.5px}
+  .mention{font-size:11.5px;color:var(--gris)}
+
+  .zone-validation{margin-top:30px;text-align:center}
+  .btn-valider{background:var(--rouge);color:#fff;border:none;border-radius:6px;font-family:Cambria,serif;font-size:18px;font-weight:700;padding:14px 34px;cursor:pointer;letter-spacing:.02em}
+  .btn-valider:hover{background:var(--rouge-fonce)}
+  .btn-valider:disabled{opacity:.5;cursor:wait}
+  .horodatage{margin-top:12px;font-size:13px;color:var(--gris)}
+  .statut{margin-top:14px;padding:12px;border-radius:5px;display:none;font-weight:700}
+  .statut.ok{display:block;background:#e8f5ee;color:var(--ok);border:1px solid #bfe3cf}
+  .statut.err{display:block;background:#fdf0ee;color:var(--rouge);border:1px solid #f0c8c2}
+
+  @media print{
+    .btn-ajout,.suppr,.suppr-mesure,.suppr-photo,.sig-effacer,.zone-validation button{display:none!important}
+    .risque{break-inside:avoid} section{border-color:#999}
+  }
+</style>
+</head>
+<body>
+
+<header class="bandeau">
+  <div class="marque">Attila &mdash; Réseau national d'entretien et réparation de toitures</div>
+  <h1>Plan de Prévention</h1>
+  <div class="ref">Établi en application des articles R.&nbsp;4511-1 et suivants du Code du travail &mdash; Décret n°&nbsp;92-158 du 20 février 1992</div>
+</header>
+
+<div class="cadre-legal">
+  <strong>Plan de prévention écrit obligatoire&nbsp;:</strong> travaux figurant sur la liste de l'arrêté du 19&nbsp;mars 1993 (travaux exposant à un risque de chute de hauteur, exposition amiante&hellip;), quelle que soit la durée de l'opération.
+</div>
+
+<main>
+
+<!-- ================= 1. PARTIES ================= -->
+<section>
+  <div class="cartouche-titre"><span class="num">1</span> Identification des parties</div>
+  <div class="corps grille">
+    <fieldset>
+      <div class="colonne-entete">Entreprise utilisatrice (client / donneur d'ordre)</div>
+      <div class="champ"><label for="eu-nom">Raison sociale</label><input type="text" id="eu-nom"></div>
+      <div class="champ"><label for="eu-adresse">Adresse du site</label><input type="text" id="eu-adresse"></div>
+      <div class="champ"><label for="eu-rep">Représentant (nom, fonction)</label><input type="text" id="eu-rep"></div>
+      <div class="champ"><label for="eu-mail">E-mail (envoi du plan signé)</label><input type="email" id="eu-mail" required></div>
+      <div class="champ"><label for="eu-tel">Téléphone</label><input type="text" id="eu-tel"></div>
+    </fieldset>
+    <fieldset>
+      <div class="colonne-entete">Entreprise extérieure — Agence ATTILA</div>
+      <div class="champ">
+        <label for="ee-agence">Agence</label>
+        <select id="ee-agence"><option value="">— Sélectionner l'agence —</option></select>
+        <div class="aide" id="ee-agence-aide">L'adresse se remplit automatiquement à la sélection (modifiable).</div>
+      </div>
+      <div class="champ"><label for="ee-adresse">Adresse de l'agence</label><input type="text" id="ee-adresse"></div>
+      <div class="champ"><label for="ee-rep">Représentant (nom, fonction)</label><input type="text" id="ee-rep"></div>
+      <div class="champ"><label for="ee-mail">E-mail (copie du plan signé)</label><input type="email" id="ee-mail" required></div>
+      <div class="champ"><label for="ee-effectif">Effectif prévu sur site</label><input type="text" id="ee-effectif"></div>
+    </fieldset>
+  </div>
+</section>
+
+<!-- ================= 2. OPÉRATION ================= -->
+<section>
+  <div class="cartouche-titre"><span class="num">2</span> Nature et durée de l'opération</div>
+  <div class="corps">
+    <div class="champ"><label for="op-nature">Nature des travaux</label>
+      <textarea id="op-nature" placeholder="Ex. : recherche de fuite, réparation d'étanchéité membrane bitumineuse, remplacement de plaques de couverture…"></textarea>
+    </div>
+    <div class="grille">
+      <div class="champ"><label for="op-debut">Date de début</label><input type="date" id="op-debut"></div>
+      <div class="champ"><label for="op-fin">Date de fin prévue</label><input type="date" id="op-fin"></div>
+      <div class="champ"><label for="op-lieu">Lieu exact d'intervention</label><input type="text" id="op-lieu" placeholder="Toiture bâtiment B, versant nord…"></div>
+      <div class="champ"><label for="op-horaires">Horaires d'intervention</label><input type="text" id="op-horaires" placeholder="8h00 – 17h00"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. INSPECTION COMMUNE ================= -->
+<section>
+  <div class="cartouche-titre"><span class="num">3</span> Inspection commune préalable <span style="font-weight:400;font-size:12.5px">(art. R.&nbsp;4512-2)</span></div>
+  <div class="corps grille">
+    <div class="champ"><label for="ic-date">Date de l'inspection</label><input type="date" id="ic-date"></div>
+    <div class="champ"><label for="ic-heure">Heure</label><input type="time" id="ic-heure"></div>
+    <div class="champ" style="grid-column:1/-1"><label for="ic-participants">Participants</label>
+      <input type="text" id="ic-participants" placeholder="Noms et fonctions des participants EU et EE">
+    </div>
+    <div class="champ" style="grid-column:1/-1"><label for="ic-obs">Observations (zones de danger, délimitation du secteur d'intervention, voies de circulation)</label>
+      <textarea id="ic-obs"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. RISQUES ATTILA PRÉ-ÉVALUÉS ================= -->
+<section>
+  <div class="cartouche-titre"><span class="num">4</span> Risques liés à l'intervention ATTILA <span style="font-weight:400;font-size:12.5px">(pré-évalués — cocher ceux applicables)</span></div>
+  <div class="corps" id="risques-attila"></div>
+</section>
+
+<!-- ================= 5. RISQUES D'INTERFÉRENCE — PARTIE CLIENT ================= -->
+<section>
+  <div class="cartouche-titre"><span class="num">5</span> Risques d'interférence propres au site <span style="font-weight:400;font-size:12.5px">(à compléter par le client)</span></div>
+  <div class="corps">
+    <p class="aide" style="margin-bottom:12px">L'entreprise utilisatrice déclare ici les risques générés par son activité, ses installations ou son environnement. Pour chaque risque : décrire la règle et l'action, puis ajouter autant de mesures de protection que nécessaire.</p>
+    <div id="risques-client"></div>
+    <button type="button" class="btn-ajout" onclick="ajouterRisqueClient()">+ Ajouter un risque d'interférence</button>
+  </div>
+</section>
+
+<!-- ================= 6. PHOTOS ================= -->
+<section>
+  <div class="cartouche-titre"><span class="num">6</span> Photos <span style="font-weight:400;font-size:12.5px">(site, accès, zones à risque — annexées au plan)</span></div>
+  <div class="corps">
+    <input type="file" id="photos-input" accept="image/*" multiple capture="environment" style="display:none" onchange="ajouterPhotos(this.files)">
+    <button type="button" class="btn-ajout" onclick="document.getElementById('photos-input').click()">+ Ajouter des photos (appareil photo ou galerie)</button>
+    <div class="photos-grille" id="photos-grille"></div>
+  </div>
+</section>
+
+<!-- ================= 7. ORGANISATION DES SECOURS ================= -->
+<section>
+  <div class="cartouche-titre"><span class="num">7</span> Consignes du site &amp; organisation des secours <span style="font-weight:400;font-size:12.5px">(art. R.&nbsp;4512-8)</span></div>
+  <div class="corps grille">
+    <div class="champ"><label for="sec-sst">Sauveteur secouriste sur site (SST)</label><input type="text" id="sec-sst"></div>
+    <div class="champ"><label for="sec-urgence">N° d'urgence interne / poste de garde</label><input type="text" id="sec-urgence"></div>
+    <div class="champ"><label for="sec-rassemblement">Point de rassemblement</label><input type="text" id="sec-rassemblement"></div>
+    <div class="champ"><label for="sec-acces">Accès secours / adresse à communiquer au 15-18-112</label><input type="text" id="sec-acces"></div>
+    <div class="champ" style="grid-column:1/-1"><label for="sec-consignes">Consignes particulières du site (accès, badges, permis de travail, sanitaires mis à disposition, consignation&hellip;)</label>
+      <textarea id="sec-consignes"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8. SIGNATURES ================= -->
+<section>
+  <div class="cartouche-titre"><span class="num">8</span> Validation et signatures</div>
+  <div class="corps grille">
+    <div class="sig-bloc">
+      <div class="colonne-entete">Entreprise utilisatrice</div>
+      <div class="champ"><label for="sig-eu-nom">Nom et fonction du signataire</label><input type="text" id="sig-eu-nom"></div>
+      <canvas class="signature" id="sig-eu"></canvas>
+      <div class="sig-actions">
+        <span class="mention">Signature manuscrite (doigt ou souris)</span>
+        <button type="button" class="sig-effacer" onclick="effacer('sig-eu')">Effacer</button>
+      </div>
+    </div>
+    <div class="sig-bloc">
+      <div class="colonne-entete">Entreprise extérieure — ATTILA</div>
+      <div class="champ"><label for="sig-ee-nom">Nom et fonction du signataire</label><input type="text" id="sig-ee-nom"></div>
+      <canvas class="signature" id="sig-ee"></canvas>
+      <div class="sig-actions">
+        <span class="mention">Signature manuscrite (doigt ou souris)</span>
+        <button type="button" class="sig-effacer" onclick="effacer('sig-ee')">Effacer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="zone-validation">
+  <button type="button" class="btn-valider" id="btn-valider" onclick="valider()">Valider, horodater et envoyer par e-mail</button>
+  <div class="horodatage" id="horodatage">L'horodatage officiel est apposé par le serveur au moment de la validation.</div>
+  <div class="statut" id="statut"></div>
+</div>
+
+</main>
+
+<script>
+/* ============================================================
+   CONFIGURATION — coller l'URL de déploiement du Apps Script
+   ============================================================ */
+const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxrI077VaE_5WMTzrDw_20-YGDyLD6qDOPQbclCwO5MQ8Ifh8MAdfdjGMsTPld3zaNY/exec";
+
+/* ================= AGENCES ATTILA (attila.fr/nos-agences) ================= */
+const AGENCES = [
+["Agen","attila-agen"],["Albi","attila-albi"],["Amiens","attila-amiens"],
+["Ancenis-Nantes Est","attila-ancenis-nantes-est"],["Angers Nord","attila-angers-nord"],
+["Angers Sud","attila-angers-sud"],["Anglet","attila-anglet"],["Angoulême","attila-angouleme"],
+["Annecy Est","attila-annecy-est"],["Annemasse","attila-annemasse"],["Arras","attila-arras"],
+["Aubagne","attila-aubagne"],["Auch","attila-auch"],["Avignon","attila-avignon"],
+["Bain-de-Bretagne-Janzé","attila-bain-de-bretagne-janze"],["Bernay","attila-bernay"],
+["Béziers","attila-beziers"],["Bordeaux Est","attila-bordeaux-est"],
+["Bordeaux Mérignac","attila-bordeaux-merignac"],["Bordeaux Nord","attila-bordeaux-nord"],
+["Bordeaux Sud","attila-bordeaux-sud"],["Bourg-en-Bresse","attila-bourg-en-bresse"],
+["Bourges","attila-bourges"],["Brest Est","attila-brest-est"],["Brignoles","attila-brignoles"],
+["Brive-la-Gaillarde","attila-brive-la-gaillarde"],["Caen Ouest","attila-caen-ouest"],
+["Carcassonne","attila-carcassonne"],["Cergy-Pontoise","attila-cergy-pontoise"],
+["Challans","attila-challans"],["Chalon-sur-Saône","attila-chalon-sur-saone"],
+["Chambéry Ouest","attila-chambery-ouest"],["Chartres","attila-chartres"],
+["Cholet Est","attila-cholet-est"],["Cholet Ouest","attila-cholet-ouest"],
+["Clermont-Ferrand","attila-clermont-ferrand"],["Cognac","attila-cognac"],
+["Colmar","attila-colmar"],["Dax","attila-dax"],["Dijon Nord","attila-dijon-nord"],
+["Dreux","attila-dreux"],["Dunkerque","attila-dunkerque"],["Élancourt","attila-elancourt"],
+["Fontainebleau","attila-fontainebleau"],["Grenoble Est","attila-grenoble-est"],
+["Grenoble Ouest","attila-grenoble-ouest"],["Issoire","attila-issoire"],
+["La Roche-sur-Yon","attila-la-roche-sur-yon"],["La Rochelle Sud","attila-la-rochelle-sud"],
+["La Tour-du-Pin","attila-la-tour-du-pin"],["Laval","attila-laval"],
+["Le Mans Nord","attila-le-mans-nord"],["Le Mans Sud","attila-le-mans-sud"],
+["Le Puy-en-Velay","attila-le-puy-en-velay"],["Les Sables-d'Olonne","attila-les-sables-dolonne"],
+["Libourne","attila-libourne"],["Lille Marcq-en-Barœul","attila-lille-marcq-en-baroeul"],
+["Lille Seclin","attila-lille-seclin"],["Limoges Nord","attila-limoges-nord"],
+["Limoges Sud","attila-limoges-sud"],["Lorient","attila-lorient"],
+["Lyon Nord Est","attila-lyon-nord-est"],["Lyon Nord Ouest","attila-lyon-nord-ouest"],
+["Lyon Plaine de L'Ain","attila-lyon-plaine-de-lain"],["Lyon Sud Est","attila-lyon-sud-est"],
+["Lyon Sud Ouest","attila-lyon-sud-ouest"],["Mâcon","attila-macon"],["Massy","attila-massy"],
+["Mayenne","attila-mayenne"],["Melun","attila-melun"],["Mont-de-Marsan","attila-mont-de-marsan"],
+["Montargis-Gien","attila-montargis-gien"],["Montauban","attila-montauban"],
+["Montélimar","attila-montelimar"],["Montpellier Est","attila-montpellier-est"],
+["Montpellier Nord","attila-montpellier-nord"],["Montpellier Sud","attila-montpellier-sud"],
+["Nancy Sud","attila-nancy-sud"],["Nantes Ouest","attila-nantes-ouest"],
+["Nantes Sud","attila-nantes-sud"],["Narbonne","attila-narbonne"],["Nevers","attila-nevers"],
+["Nice Ouest","attila-nice-ouest"],["Niort","attila-niort"],["Orange","attila-orange"],
+["Orléans Nord","attila-orleans-nord"],["Oyonnax","attila-oyonnax"],["Pau","attila-pau"],
+["Périgueux","attila-perigueux"],["Ploërmel-Redon","attila-ploermel-redon"],
+["Poitiers","attila-poitiers-nord"],["Pontivy-Loudéac","attila-pontivy-loudeac"],
+["Pornic","attila-pornic"],["Provins","attila-provins"],["Quimper","attila-quimper"],
+["Reims Est","attila-reims-est"],["Reims Ouest","attila-reims-ouest"],
+["Rennes Nord","attila-rennes-nord"],["Rennes Sud","attila-rennes-sud"],
+["Roanne","attila-roanne"],["Rodez","attila-rodez"],["Rouen Sud","attila-rouen-sud"],
+["Saint-Brieuc","attila-saint-brieuc"],["Saint-Étienne Andrézieux","attila-saint-etienne-andrezieux"],
+["Saint-Étienne Firminy","attila-saint-etienne-firminy"],
+["Saint-Germain-en-Laye","attila-saint-germain-en-laye"],
+["Saint-Jean-de-Luz","attila-saint-jean-de-luz"],["Saint-Nazaire","attila-saint-nazaire"],
+["Saint-Quentin","attila-saint-quentin"],["Saintes","attila-saintes"],["Saumur","attila-saumur"],
+["Sens","attila-sens"],["Sète","attila-sete"],
+["Tarare Plaine du Forez","attila-tarare-plaine-du-forez"],["Toulon Ouest","attila-toulon-ouest"],
+["Toulouse Nord","attila-toulouse-nord"],["Toulouse Sud","attila-toulouse-sud"],
+["Tours Est","attila-tours-est"],["Tours Ouest","attila-tours-ouest"],["Troyes","attila-troyes"],
+["Valence","attila-valence"],["Vannes Ouest","attila-vannes-ouest"],
+["Versailles","attila-versailles"],["Vichy","attila-vichy"],["Vienne","attila-vienne"],
+["Villefranche-sur-Saône","attila-villefranche-sur-saone"],
+["Villeneuve-d'Ascq","attila-villeneuve-dascq"],["Vitré-Fougères","attila-vitre-fougeres"],
+["Vitrolles","attila-vitrolles"],["Voiron","attila-voiron"],["Yonne Centre","attila-yonne-centre"],
+["Yvetot-Barentin","attila-yvetot-barentin"]
+];
+
+const selAgence = document.getElementById("ee-agence");
+AGENCES.forEach(a=>{
+  const o = document.createElement("option");
+  o.value = a[1]; o.textContent = "ATTILA " + a[0];
+  selAgence.appendChild(o);
+});
+const oAutre = document.createElement("option");
+oAutre.value = "autre"; oAutre.textContent = "Autre agence…";
+selAgence.appendChild(oAutre);
+
+selAgence.addEventListener("change", ()=>{
+  const aide = document.getElementById("ee-agence-aide");
+  const slug = selAgence.value;
+  if(!slug || slug==="autre"){ return; }
+  if(!URL_APPS_SCRIPT){
+    aide.textContent = "Adresse automatique disponible une fois l'URL Apps Script configurée.";
+    return;
+  }
+  aide.textContent = "Recherche de l'adresse de l'agence…";
+  fetch(URL_APPS_SCRIPT + "?action=agence&slug=" + encodeURIComponent(slug))
+    .then(r=>r.json())
+    .then(rep=>{
+      if(rep.adresse) document.getElementById("ee-adresse").value = rep.adresse;
+      if(rep.email && !document.getElementById("ee-mail").value) document.getElementById("ee-mail").value = rep.email;
+      aide.textContent = rep.adresse
+        ? "Coordonnées récupérées depuis l'annuaire — vérifier et corriger si besoin."
+        : "Agence absente de l'annuaire : saisir l'adresse manuellement.";
+    })
+    .catch(()=>{ aide.textContent = "Adresse non récupérée : la saisir manuellement."; });
+});
+
+/* ================= RISQUES ATTILA PRÉ-ÉVALUÉS ================= */
+const RISQUES_ATTILA = [
+  {
+    id:"epi-base", coche:true,
+    titre:"Port des EPI de base (permanent sur site)",
+    regle:"Port obligatoire et permanent des EPI de base pour tout intervenant ATTILA, dès l'arrivée sur site.",
+    action:"Vérification du port des EPI à la prise de poste par le chef d'équipe. EPI complémentaires selon les risques cochés ci-dessous.",
+    moyens:"Gants de protection, chaussures de sécurité, casque de chantier (à jugulaire pour les travaux en hauteur), vêtements de travail haute visibilité."
+  },
+  {
+    id:"chute-hauteur", coche:true,
+    titre:"Chute de hauteur (travaux en toiture)",
+    regle:"Priorité absolue aux protections collectives (EPC avant EPI). Aucun accès en toiture sans reconnaissance préalable.",
+    action:"Reconnaissance préalable par drone lorsque possible. Vérification des points d'ancrage, mise en place de garde-corps provisoires, filets ou lignes de vie. Balisage de la zone au sol.",
+    moyens:"Garde-corps / filets / lignes de vie certifiées, harnais + longe double avec absorbeur (vérification VGP à jour), casque à jugulaire, drone de reconnaissance."
+  },
+  {
+    id:"nacelle", coche:false,
+    titre:"Travaux en nacelle (PEMP)",
+    regle:"Conduite de la PEMP réservée au personnel titulaire du CACES R486 en cours de validité et d'une autorisation de conduite délivrée par l'employeur.",
+    action:"Examen d'adéquation de la PEMP avant intervention, balisage de la zone d'évolution au sol, interdiction de circulation sous la nacelle, vérification du terrain (portance, dévers).",
+    moyens:"CACES R486 à jour + autorisation de conduite, PEMP avec VGP semestrielle à jour, balisage (barrières, cônes), harnais avec longe de retenue ancrée dans la nacelle, casque à jugulaire."
+  },
+  {
+    id:"drone", coche:true,
+    titre:"Utilisation de drone (reconnaissance de toiture)",
+    regle:"Vol réalisé uniquement par un télépilote formé, pour le compte d'un exploitant déclaré (AlphaTango). Respect de la réglementation européenne drones : aucun survol de personnes, vérification préalable des zones de restriction (carte Géoportail drones), autorisation spécifique si vol en agglomération ou en zone réglementée.",
+    action:"Analyse de la zone de vol avant décollage, définition d'un périmètre de sécurité décollage/atterrissage, information du client et des occupants du site, vérification météo (vent, pluie) et checklist pré-vol du matériel.",
+    moyens:"Attestation de formation du télépilote, drone enregistré avec signalement électronique actif, gilet haute visibilité pour le télépilote, balisage de la zone de décollage/atterrissage, checklist pré-vol, assurance RC exploitant."
+  },
+  {
+    id:"chute-objets", coche:true,
+    titre:"Chute d'objets et de matériaux",
+    regle:"Aucune circulation de tiers sous la zone d'intervention.",
+    action:"Balisage et condamnation du périmètre au sol, goulotte ou descente contrôlée des gravats, arrimage de l'outillage en toiture.",
+    moyens:"Barrières, rubalise, panneaux « chantier interdit au public », filets de recueil, sacs à gravats."
+  },
+  {
+    id:"amiante", coche:false,
+    titre:"Exposition à l'amiante (intervention SS4)",
+    regle:"Aucune intervention sur matériaux susceptibles de contenir de l'amiante sans repérage avant travaux (RAT) transmis par le donneur d'ordre.",
+    action:"Application du mode opératoire SS4 de l'entreprise, travail à l'humide, aspiration THE, conditionnement des déchets en double emballage étiqueté, traçabilité Trackdéchets (BSDA).",
+    moyens:"Personnel formé SS4, combinaisons type 5, APR (demi-masque P3 minimum), sacs déchets amiante étiquetés, aspirateur THE."
+  },
+  {
+    id:"point-chaud", coche:false,
+    titre:"Travaux par point chaud (chalumeau, soudure)",
+    regle:"Permis feu obligatoire, co-signé avec l'entreprise utilisatrice, avant tout travail par point chaud.",
+    action:"Éloignement ou protection des matériaux combustibles, surveillance continue pendant les travaux et ronde de surveillance 2 h après la fin des travaux.",
+    moyens:"Permis feu, extincteurs adaptés à proximité immédiate, écrans thermiques, seau d'eau / pulvérisateur."
+  },
+  {
+    id:"electrique", coche:false,
+    titre:"Risque électrique (lignes, installations en toiture, photovoltaïque)",
+    regle:"Distance de sécurité aux lignes aériennes. Aucune intervention à proximité d'installations photovoltaïques sans identification préalable des circuits.",
+    action:"Identification des réseaux avec le client, consignation si nécessaire, personnel habilité selon la nature des travaux.",
+    moyens:"Habilitations électriques à jour (a minima H0B0), VAT, EPI isolants si requis."
+  },
+  {
+    id:"manutention", coche:true,
+    titre:"Manutention manuelle et approvisionnement en toiture",
+    regle:"Limitation du port de charges, priorité aux moyens mécaniques de levage.",
+    action:"Levage par grue auxiliaire ou monte-matériaux avec zone d'exclusion au sol, élingage contrôlé, gestes et postures.",
+    moyens:"Grue auxiliaire / treuil / monte-matériaux (VGP à jour), élingues contrôlées, gants de manutention."
+  },
+  {
+    id:"chimique", coche:false,
+    titre:"Risque chimique (colles, primaires, solvants, bitumes)",
+    regle:"FDS disponibles sur site pour chaque produit utilisé. Stockage à l'écart de toute source d'ignition.",
+    action:"Application en zone ventilée, respect des consignes FDS, gestion des déchets souillés en filière adaptée.",
+    moyens:"FDS, gants adaptés (nitrile/néoprène selon produit), lunettes, protection respiratoire si prescrite par la FDS."
+  },
+  {
+    id:"meteo", coche:true,
+    titre:"Conditions météorologiques",
+    regle:"Arrêt immédiat des travaux en hauteur en cas de vent fort (rafales ≥ 50 km/h), d'orage, de verglas ou de toiture glissante (pluie, gel, mousse).",
+    action:"Consultation météo avant chaque prise de poste, décision d'arrêt par le chef d'équipe sans validation hiérarchique préalable (droit d'arrêt).",
+    moyens:"Application météo, anémomètre si nécessaire, consigne d'arrêt de travaux affichée."
+  },
+  {
+    id:"coactivite", coche:true,
+    titre:"Co-activité et circulation sur le site client",
+    regle:"Respect du plan de circulation du site. Séparation des flux piétons / engins. Stationnement des véhicules ATTILA en marche arrière pour permettre un départ en sécurité et une évacuation rapide.",
+    action:"Accueil sécurité du site suivi par chaque intervenant, stationnement en marche arrière en zone autorisée, balisage des cheminements, vigilance mutuelle avec les engins du site.",
+    moyens:"Gilets haute visibilité, plan de circulation remis par le client, balisage, avertisseur de recul des véhicules."
+  }
+];
+
+/* ================= PICTOGRAMMES & VISUELS ================= */
+function ico(glyphe){
+  return `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#C0392B"/>${glyphe}</svg>`;
+}
+const ICONES = {
+  "epi-base": ico(`<path d="M13 23a7 7 0 0 1 14 0v1H13z" fill="#fff"/><rect x="10" y="24" width="20" height="3.2" rx="1.6" fill="#fff"/>`),
+  "chute-hauteur": ico(`<circle cx="16" cy="12" r="3" fill="#fff"/><path d="M15 16l5 5-2 8" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M28 11v11m0 0l-3.2-3.2M28 22l3.2-3.2" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>`),
+  "nacelle": ico(`<rect x="21" y="10" width="9" height="6.5" fill="none" stroke="#fff" stroke-width="2"/><path d="M21 16L12 26" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><rect x="8.5" y="25.5" width="13" height="4" rx="1.3" fill="#fff"/><circle cx="12" cy="31.5" r="1.9" fill="#fff"/><circle cx="18" cy="31.5" r="1.9" fill="#fff"/>`),
+  "drone": ico(`<rect x="15.5" y="18" width="9" height="4.5" rx="2.2" fill="#fff"/><path d="M17 18.5l-5-4.5m16 4.5l5-4.5" stroke="#fff" stroke-width="2"/><path d="M7.5 13.5h9M23.5 13.5h9" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M18 25l2 4 2-4" stroke="#fff" stroke-width="1.6" fill="none"/>`),
+  "chute-objets": ico(`<rect x="16" y="9.5" width="8" height="8" fill="#fff" transform="rotate(14 20 13.5)"/><path d="M20 21.5v8m0 0l-3.2-3.2m3.2 3.2l3.2-3.2" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>`),
+  "amiante": ico(`<path d="M12.5 19.5a7.5 6 0 0 1 15 0v3.5a7.5 6 0 0 1-15 0z" fill="#fff"/><circle cx="20" cy="22" r="2.6" fill="#C0392B"/><path d="M12.5 20L8 17m23.5 3l4.5-3" stroke="#fff" stroke-width="1.8"/>`),
+  "point-chaud": ico(`<path d="M20 8.5c3 4.5 7.5 6.5 7.5 12.5a7.5 7.5 0 0 1-15 0c0-4 2-5.5 3.2-8.5 1 2.2 2 3.2 4 4.2-1.2-3.2-.2-5.2.3-8.2z" fill="#fff"/>`),
+  "electrique": ico(`<path d="M22.5 8l-9.5 14.5h6L17 32l10.5-15.5h-6z" fill="#fff"/>`),
+  "manutention": ico(`<circle cx="14.5" cy="11.5" r="3" fill="#fff"/><path d="M14 15.5v8.5l-2.5 6m3-8.5h6" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/><rect x="21.5" y="15.5" width="8.5" height="8.5" fill="none" stroke="#fff" stroke-width="2"/>`),
+  "chimique": ico(`<path d="M17 9h6m-5 0v6.5l6 10.5a2 2 0 0 1-1.8 3H13.8a2 2 0 0 1-1.8-3l6-10.5V9" stroke="#fff" stroke-width="2.1" fill="none" stroke-linecap="round"/><path d="M14.5 24h11" stroke="#fff" stroke-width="2.1"/>`),
+  "meteo": ico(`<path d="M13.5 21.5a4.8 4.8 0 0 1 .8-9.5A6 6 0 0 1 26 12.8a4.4 4.4 0 0 1 .8 8.7z" fill="#fff"/><path d="M11 26.5h12.5M14.5 30.5h9" stroke="#fff" stroke-width="2.1" stroke-linecap="round"/>`),
+  "coactivite": ico(`<rect x="8.5" y="16.5" width="12.5" height="8.5" rx="1.2" fill="#fff"/><path d="M21 19.5h6.2l3.3 4v1.5H21z" fill="#fff"/><circle cx="13.5" cy="27.5" r="2.4" fill="#C0392B" stroke="#fff" stroke-width="1.6"/><circle cx="26" cy="27.5" r="2.4" fill="#C0392B" stroke="#fff" stroke-width="1.6"/><path d="M11 13.5l-3 3 3 3" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>`)
+};
+
+/* Panneaux d'obligation EPI (signalétique bleue normalisée) — seul visuel conservé */
+function panneau(glyphe, libelle){
+  return `<div class="panneau"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${libelle}"><circle cx="32" cy="32" r="31" fill="#005BA4"/>${glyphe}</svg>${libelle}</div>`;
+}
+const VISUELS = {
+  "epi-base": `<div class="panneau-rangee">
+    ${panneau(`<path d="M20 36a12 12 0 0 1 24 0v2H20z" fill="#fff"/><rect x="15" y="38" width="34" height="5" rx="2.5" fill="#fff"/><path d="M32 20v-4" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`, "Casque")}
+    ${panneau(`<circle cx="32" cy="15" r="5" fill="#fff"/><rect x="24.5" y="22" width="15" height="17" rx="2" fill="#fff"/><path d="M25 23l14 15M39 23L25 38" stroke="#005BA4" stroke-width="3"/><path d="M27 40l-2 9m12-9l2 9" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>`, "Harnais")}
+    ${panneau(`<path d="M25 46V29a3.2 3.2 0 0 1 6.4 0v-6a3.2 3.2 0 0 1 6.4 0v6a3.2 3.2 0 0 1 6.4 0v17a9 9 0 0 1-9 9h-1.2a9 9 0 0 1-9-9z" fill="#fff"/>`, "Gants")}
+    ${panneau(`<path d="M21 18h9v13l12 4.5a5 5 0 0 1 3.4 4.7V44H21V18z" fill="#fff"/><rect x="19" y="44" width="28" height="4.5" rx="2" fill="#fff"/>`, "Chaussures")}
+    ${panneau(`<path d="M22 22c4-2 6-7 10-7s6 5 10 7v24H22z" fill="#fff"/><path d="M22 32h20M22 38.5h20" stroke="#005BA4" stroke-width="3.5"/><path d="M32 15.5v30" stroke="#005BA4" stroke-width="2"/>`, "Gilet HV")}
+  </div>`
+};
+
+const contRA = document.getElementById("risques-attila");
+RISQUES_ATTILA.forEach(r=>{
+  const div = document.createElement("div");
+  div.className = "risque" + (r.coche ? " actif":"");
+  div.innerHTML = `
+    <label class="risque-tete" style="text-transform:none;letter-spacing:0;color:inherit;margin:0">
+      <input type="checkbox" data-id="${r.id}" ${r.coche?"checked":""}>
+      <span class="risque-icone">${ICONES[r.id]||""}</span>
+      <span class="titre">${r.titre}</span>
+    </label>
+    <div class="risque-detail">
+      <dl class="rap">
+        <dt>Règle</dt><dd>${r.regle}</dd>
+        <dt>Action</dt><dd>${r.action}</dd>
+        <dt>Protection</dt><dd>${r.moyens}</dd>
+      </dl>
+      ${VISUELS[r.id]||""}
+      <div class="verrou">Contenu pré-évalué par la direction QHSE ATTILA — non modifiable.</div>
+    </div>`;
+  div.querySelector("input").addEventListener("change",e=>{
+    div.classList.toggle("actif", e.target.checked);
+  });
+  contRA.appendChild(div);
+});
+
+/* ================= RISQUES CLIENT (risque puis mesures) ================= */
+let compteurClient = 0;
+function ajouterRisqueClient(){
+  compteurClient++;
+  const div = document.createElement("div");
+  div.className = "ligne-client";
+  div.innerHTML = `
+    <button type="button" class="suppr" onclick="this.parentNode.remove()">Supprimer le risque</button>
+    <div class="champ"><label>Risque identifié n°${compteurClient}</label>
+      <input type="text" class="rc-risque" placeholder="Ex. : circulation de chariots élévateurs dans la cour"></div>
+    <div class="grille">
+      <div class="champ"><label>Règle</label>
+        <textarea class="rc-regle" placeholder="Règle à respecter sur le site"></textarea></div>
+      <div class="champ"><label>Action</label>
+        <textarea class="rc-action" placeholder="Action de prévention mise en œuvre"></textarea></div>
+    </div>
+    <label>Mesures de protection</label>
+    <div class="rc-mesures"></div>
+    <button type="button" class="btn-ajout secondaire" onclick="ajouterMesure(this)">+ Ajouter une mesure de protection</button>`;
+  document.getElementById("risques-client").appendChild(div);
+  ajouterMesure(div.querySelector(".btn-ajout.secondaire")); // une mesure par défaut
+}
+function ajouterMesure(btn){
+  const cont = btn.parentNode.querySelector(".rc-mesures");
+  const d = document.createElement("div");
+  d.className = "mesure";
+  d.innerHTML = `
+    <textarea class="rc-mesure" placeholder="EPC / EPI / dispositif mis à disposition"></textarea>
+    <button type="button" class="suppr-mesure" onclick="this.parentNode.remove()">×</button>`;
+  cont.appendChild(d);
+}
+ajouterRisqueClient();
+
+/* ================= PHOTOS (compression + légende) ================= */
+const photos = [];
+function ajouterPhotos(fichiers){
+  [...fichiers].forEach(f=>{
+    const lecteur = new FileReader();
+    lecteur.onload = ev=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const MAX = 1200;
+        const echelle = Math.min(1, MAX / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * echelle);
+        c.height = Math.round(img.height * echelle);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        const donnees = c.toDataURL("image/jpeg", 0.72);
+        const photo = { image: donnees, legende: "" };
+        photos.push(photo);
+        afficherPhoto(photo);
+      };
+      img.src = ev.target.result;
+    };
+    lecteur.readAsDataURL(f);
+  });
+  document.getElementById("photos-input").value = "";
+}
+function afficherPhoto(photo){
+  const div = document.createElement("div");
+  div.className = "photo-vignette";
+  div.innerHTML = `
+    <button type="button" class="suppr-photo">×</button>
+    <img src="${photo.image}" alt="Photo du site">
+    <input type="text" placeholder="Légende…">`;
+  div.querySelector(".suppr-photo").addEventListener("click", ()=>{
+    photos.splice(photos.indexOf(photo), 1);
+    div.remove();
+  });
+  div.querySelector("input").addEventListener("input", e=>{ photo.legende = e.target.value; });
+  document.getElementById("photos-grille").appendChild(div);
+}
+
+/* ================= SIGNATURES ================= */
+function initSignature(id){
+  const c = document.getElementById(id);
+  const ctx = c.getContext("2d");
+  function resize(){
+    const data = c.toDataURL();
+    c.width = c.offsetWidth * 2; c.height = 300;
+    ctx.scale(2,2); ctx.lineWidth = 2; ctx.lineCap = "round"; ctx.strokeStyle = "#1e2226";
+    const img = new Image(); img.onload = ()=>ctx.drawImage(img,0,0,c.offsetWidth,150); img.src = data;
+  }
+  resize(); window.addEventListener("resize", resize);
+  let trace = false;
+  function pos(e){
+    const r = c.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    return {x:p.clientX-r.left, y:p.clientY-r.top};
+  }
+  function debut(e){ trace = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); c.dataset.signe="1"; e.preventDefault(); }
+  function bouge(e){ if(!trace) return; const p = pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); }
+  function fin(){ trace = false; }
+  c.addEventListener("mousedown",debut); c.addEventListener("mousemove",bouge);
+  window.addEventListener("mouseup",fin);
+  c.addEventListener("touchstart",debut,{passive:false});
+  c.addEventListener("touchmove",bouge,{passive:false});
+  c.addEventListener("touchend",fin);
+}
+function effacer(id){
+  const c = document.getElementById(id);
+  c.getContext("2d").clearRect(0,0,c.width,c.height);
+  c.dataset.signe="";
+}
+initSignature("sig-eu"); initSignature("sig-ee");
+
+/* ================= COLLECTE + VALIDATION + ENVOI ================= */
+function v(id){ return document.getElementById(id).value.trim(); }
+
+function valider(){
+  const statut = document.getElementById("statut");
+  statut.className = "statut";
+
+  const manquants = [];
+  if(!v("eu-nom")) manquants.push("raison sociale du client");
+  if(!v("eu-mail")) manquants.push("e-mail du client");
+  if(!selAgence.value) manquants.push("agence ATTILA");
+  if(!v("ee-mail")) manquants.push("e-mail de l'agence");
+  if(!document.getElementById("sig-eu").dataset.signe) manquants.push("signature du client");
+  if(!document.getElementById("sig-ee").dataset.signe) manquants.push("signature ATTILA");
+  if(manquants.length){
+    statut.className = "statut err";
+    statut.textContent = "Éléments manquants : " + manquants.join(", ") + ".";
+    return;
+  }
+
+  const nomAgence = selAgence.value==="autre" ? "ATTILA (autre agence)" : selAgence.options[selAgence.selectedIndex].textContent;
+
+  const donnees = {
+    horodatageClient: new Date().toISOString(),
+    entrepriseUtilisatrice: {
+      nom:v("eu-nom"), adresse:v("eu-adresse"), representant:v("eu-rep"),
+      email:v("eu-mail"), tel:v("eu-tel")
+    },
+    entrepriseExterieure: {
+      agence:nomAgence, slug:selAgence.value, adresse:v("ee-adresse"),
+      representant:v("ee-rep"), email:v("ee-mail"), effectif:v("ee-effectif")
+    },
+    operation: {
+      nature:v("op-nature"), debut:v("op-debut"), fin:v("op-fin"),
+      lieu:v("op-lieu"), horaires:v("op-horaires")
+    },
+    inspectionCommune: {
+      date:v("ic-date"), heure:v("ic-heure"),
+      participants:v("ic-participants"), observations:v("ic-obs")
+    },
+    risquesAttila: RISQUES_ATTILA
+      .filter(r=>document.querySelector(`input[data-id="${r.id}"]`).checked)
+      .map(r=>({titre:r.titre, regle:r.regle, action:r.action, moyens:r.moyens})),
+    risquesClient: [...document.querySelectorAll(".ligne-client")].map(l=>({
+      risque:l.querySelector(".rc-risque").value.trim(),
+      regle:l.querySelector(".rc-regle").value.trim(),
+      action:l.querySelector(".rc-action").value.trim(),
+      mesures:[...l.querySelectorAll(".rc-mesure")].map(m=>m.value.trim()).filter(Boolean)
+    })).filter(r=>r.risque),
+    photos: photos.map(p=>({image:p.image, legende:p.legende})),
+    secours: {
+      sst:v("sec-sst"), urgence:v("sec-urgence"),
+      rassemblement:v("sec-rassemblement"), acces:v("sec-acces"),
+      consignes:v("sec-consignes")
+    },
+    signatures: {
+      euNom:v("sig-eu-nom"), euImage:document.getElementById("sig-eu").toDataURL("image/png"),
+      eeNom:v("sig-ee-nom"), eeImage:document.getElementById("sig-ee").toDataURL("image/png")
+    }
+  };
+
+  if(!URL_APPS_SCRIPT){
+    statut.className = "statut ok";
+    statut.textContent = "Prototype : données prêtes (voir console). Configurer URL_APPS_SCRIPT pour activer l'horodatage serveur et l'envoi e-mail.";
+    console.log("PLAN DE PRÉVENTION — payload :", donnees);
+    return;
+  }
+
+  const btn = document.getElementById("btn-valider");
+  btn.disabled = true; btn.textContent = "Envoi en cours…";
+
+  fetch(URL_APPS_SCRIPT, {
+    method:"POST",
+    body: JSON.stringify(donnees) // pas de header Content-Type : évite le preflight CORS avec Apps Script
+  })
+  .then(r=>r.json())
+  .then(rep=>{
+    statut.className = "statut ok";
+    statut.textContent = "Plan de prévention horodaté le " + rep.horodatage +
+      " (réf. " + rep.reference + "). PDF envoyé à " + donnees.entrepriseUtilisatrice.email +
+      " et " + donnees.entrepriseExterieure.email + ".";
+    document.getElementById("horodatage").textContent = "Référence : " + rep.reference + " — horodatage serveur : " + rep.horodatage;
+  })
+  .catch(()=>{
+    statut.className = "statut err";
+    statut.textContent = "L'envoi a échoué. Vérifier la connexion et réessayer ; les données saisies sont conservées sur cette page.";
+  })
+  .finally(()=>{
+    btn.disabled = false;
+    btn.textContent = "Valider, horodater et envoyer par e-mail";
+  });
+}
+</script>
+</body>
+</html>
