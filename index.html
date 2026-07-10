@@ -56,6 +56,11 @@
   .panneau svg{width:62px;height:62px;display:block;margin:0 auto 5px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))}
   .scene{width:100%;max-width:440px;display:block;margin:12px 0 0;background:#fff;border:1px solid var(--ligne);border-radius:6px}
   .scene-legende{font-size:11.5px;color:var(--gris);margin-top:4px;font-style:italic}
+  .droit-retrait{border:2px solid var(--rouge);background:#fdf6f5;border-radius:6px;padding:14px 16px;margin-bottom:16px}
+  .droit-retrait h3{font-size:16px;color:var(--rouge);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .droit-retrait p{font-size:14px;line-height:1.5}
+  .droit-retrait .base-legale{font-size:11.5px;color:var(--gris);margin-top:8px;font-style:italic}
+  .badge-oblig{background:var(--rouge);color:#fff;font-family:Calibri,sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:3px;padding:2px 7px;margin-left:8px;vertical-align:middle;white-space:nowrap}
 
   .ligne-client{border:1px solid var(--ligne);border-left:4px solid var(--encre);border-radius:4px;padding:12px;margin-bottom:12px;position:relative}
   .ligne-client .suppr{position:absolute;top:8px;right:8px;background:none;border:1px solid var(--ligne);border-radius:4px;color:var(--gris);cursor:pointer;font-size:12px;padding:3px 8px}
@@ -170,7 +175,14 @@
 <!-- ================= 4. RISQUES ATTILA PRÉ-ÉVALUÉS ================= -->
 <section>
   <div class="cartouche-titre"><span class="num">4</span> Risques liés à l'intervention ATTILA <span style="font-weight:400;font-size:12.5px">(pré-évalués — cocher ceux applicables)</span></div>
-  <div class="corps" id="risques-attila"></div>
+  <div class="corps">
+    <div class="droit-retrait">
+      <h3><svg width="22" height="22" viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#C0392B"/><path d="M20 10v13" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="20" cy="29.5" r="2.6" fill="#fff"/></svg>Droit de retrait — la sécurité d'abord, toujours</h3>
+      <p>Chaque collaborateur ATTILA a le droit de <strong>se retirer immédiatement</strong> de toute situation de travail qu'il estime dangereuse : conditions météo dégradées (chaleur, vent, pluie, orage), toiture ou point fragile, ou toute autre condition dangereuse constatée sur le site. Il se met en sécurité, <strong>prévient sa hiérarchie et le client</strong>, et les travaux ne reprennent qu'une fois la situation traitée. Aucune sanction ni retenue ne peut être appliquée pour l'exercice légitime de ce droit.</p>
+      <div class="base-legale">Droit d'alerte et de retrait — articles L. 4131-1 et suivants du Code du travail. Mention permanente, applicable à tous les risques ci-dessous.</div>
+    </div>
+    <div id="risques-attila"></div>
+  </div>
 </section>
 
 <!-- ================= 5. RISQUES D'INTERFÉRENCE — PARTIE CLIENT ================= -->
@@ -343,18 +355,32 @@ selAgence.addEventListener("change", ()=>{
 /* ================= RISQUES ATTILA PRÉ-ÉVALUÉS ================= */
 const RISQUES_ATTILA = [
   {
-    id:"epi-base", coche:true,
-    titre:"Port des EPI de base (permanent sur site)",
-    regle:"Port obligatoire et permanent des EPI de base pour tout intervenant ATTILA, dès l'arrivée sur site.",
-    action:"Vérification du port des EPI à la prise de poste par le chef d'équipe. EPI complémentaires selon les risques cochés ci-dessous.",
-    moyens:"Gants de protection, chaussures de sécurité, casque de chantier (à jugulaire pour les travaux en hauteur), vêtements de travail haute visibilité."
+    id:"epi-base", coche:true, obligatoire:true,
+    titre:"Port des EPI — travail en hauteur (permanent sur site)",
+    regle:"Port obligatoire et permanent des EPI de base pour tout intervenant ATTILA, dès l'arrivée sur site. Pour tout travail en hauteur : harnais avec système d'arrêt de chute, ancré sur point conforme, en complément des protections collectives (EPC avant EPI).",
+    action:"Vérification du port des EPI à la prise de poste par le chef d'équipe. Contrôle visuel du harnais et des longes avant chaque utilisation (VGP à jour). EPI complémentaires selon les risques cochés ci-dessous.",
+    moyens:"Gants de protection, chaussures de sécurité, casque à jugulaire, vêtements haute visibilité, harnais + longe double avec absorbeur d'énergie."
   },
   {
-    id:"chute-hauteur", coche:true,
+    id:"chute-hauteur", coche:true, obligatoire:true,
     titre:"Chute de hauteur (travaux en toiture)",
     regle:"Priorité absolue aux protections collectives (EPC avant EPI). Aucun accès en toiture sans reconnaissance préalable.",
     action:"Reconnaissance préalable par drone lorsque possible. Vérification des points d'ancrage, mise en place de garde-corps provisoires, filets ou lignes de vie. Balisage de la zone au sol.",
     moyens:"Garde-corps / filets / lignes de vie certifiées, harnais + longe double avec absorbeur (vérification VGP à jour), casque à jugulaire, drone de reconnaissance."
+  },
+  {
+    id:"chute-objets", coche:true, obligatoire:true,
+    titre:"Chute d'objets et heurts",
+    regle:"Aucune circulation de tiers sous la zone d'intervention. Prévention des heurts entre intervenants, charges manutentionnées et éléments de structure.",
+    action:"Balisage et condamnation du périmètre au sol, goulotte ou descente contrôlée des gravats, arrimage de l'outillage en toiture, vigilance mutuelle lors des déplacements et manutentions.",
+    moyens:"Barrières, rubalise, panneaux « chantier interdit au public », filets de recueil, sacs à gravats, casque à jugulaire."
+  },
+  {
+    id:"meteo", coche:true, obligatoire:true,
+    titre:"Conditions météorologiques",
+    regle:"Arrêt immédiat des travaux en hauteur en cas de vent fort (rafales ≥ 50 km/h), d'orage, de forte chaleur, de verglas ou de toiture glissante (pluie, gel, mousse).",
+    action:"Consultation météo avant chaque prise de poste, décision d'arrêt par le chef d'équipe sans validation hiérarchique préalable (droit de retrait ci-dessus).",
+    moyens:"Application météo, anémomètre si nécessaire, hydratation et aménagement des horaires en cas de chaleur, consigne d'arrêt de travaux affichée."
   },
   {
     id:"nacelle", coche:false,
@@ -364,32 +390,25 @@ const RISQUES_ATTILA = [
     moyens:"CACES R486 à jour + autorisation de conduite, PEMP avec VGP semestrielle à jour, balisage (barrières, cônes), harnais avec longe de retenue ancrée dans la nacelle, casque à jugulaire."
   },
   {
-    id:"drone", coche:true,
+    id:"drone", coche:false,
     titre:"Utilisation de drone (reconnaissance de toiture)",
     regle:"Vol réalisé uniquement par un télépilote formé, pour le compte d'un exploitant déclaré (AlphaTango). Respect de la réglementation européenne drones : aucun survol de personnes, vérification préalable des zones de restriction (carte Géoportail drones), autorisation spécifique si vol en agglomération ou en zone réglementée.",
     action:"Analyse de la zone de vol avant décollage, définition d'un périmètre de sécurité décollage/atterrissage, information du client et des occupants du site, vérification météo (vent, pluie) et checklist pré-vol du matériel.",
     moyens:"Attestation de formation du télépilote, drone enregistré avec signalement électronique actif, gilet haute visibilité pour le télépilote, balisage de la zone de décollage/atterrissage, checklist pré-vol, assurance RC exploitant."
   },
   {
-    id:"chute-objets", coche:true,
-    titre:"Chute d'objets et de matériaux",
-    regle:"Aucune circulation de tiers sous la zone d'intervention.",
-    action:"Balisage et condamnation du périmètre au sol, goulotte ou descente contrôlée des gravats, arrimage de l'outillage en toiture.",
-    moyens:"Barrières, rubalise, panneaux « chantier interdit au public », filets de recueil, sacs à gravats."
-  },
-  {
     id:"amiante", coche:false,
-    titre:"Exposition à l'amiante (intervention SS4)",
-    regle:"Aucune intervention sur matériaux susceptibles de contenir de l'amiante sans repérage avant travaux (RAT) transmis par le donneur d'ordre.",
-    action:"Application du mode opératoire SS4 de l'entreprise, travail à l'humide, aspiration THE, conditionnement des déchets en double emballage étiqueté, traçabilité Trackdéchets (BSDA).",
-    moyens:"Personnel formé SS4, combinaisons type 5, APR (demi-masque P3 minimum), sacs déchets amiante étiquetés, aspirateur THE."
+    titre:"Exposition à l'amiante / toiture fragile (intervention SS4)",
+    regle:"Aucune intervention sur matériaux susceptibles de contenir de l'amiante sans repérage avant travaux (RAT) transmis par le donneur d'ordre. Toiture fibrociment = toiture fragile : mise en place OBLIGATOIRE de Sécuriplac (dispositif de circulation sur toitures fragiles), avec EPI antichute et ancrage obligatoires pour tout cheminement.",
+    action:"Application du mode opératoire SS4 de l'entreprise, travail à l'humide, aspiration THE, conditionnement des déchets en double emballage étiqueté, traçabilité Trackdéchets (BSDA). Évaluation systématique du besoin en protections collectives (filet sous toiture ou équivalent) dès que la réparation est importante en volume ou répétée en fréquence.",
+    moyens:"Sécuriplac + harnais ancré (obligatoires), personnel formé SS4, combinaisons type 5, APR (demi-masque P3 minimum), sacs déchets amiante étiquetés, aspirateur THE, filet sous toiture si l'évaluation le requiert."
   },
   {
-    id:"point-chaud", coche:false,
-    titre:"Travaux par point chaud (chalumeau, soudure)",
-    regle:"Permis feu obligatoire, co-signé avec l'entreprise utilisatrice, avant tout travail par point chaud.",
-    action:"Éloignement ou protection des matériaux combustibles, surveillance continue pendant les travaux et ronde de surveillance 2 h après la fin des travaux.",
-    moyens:"Permis feu, extincteurs adaptés à proximité immédiate, écrans thermiques, seau d'eau / pulvérisateur."
+    id:"incendie", coche:false,
+    titre:"Risque incendie — 0 flamme chez ATTILA",
+    regle:"Aucune flamme nue sur les chantiers ATTILA : le chalumeau est proscrit. Les travaux d'étanchéité à chaud sont réalisés exclusivement au pistolet à air chaud.",
+    action:"Permis feu co-signé avec l'entreprise utilisatrice avant tout travail par point chaud, éloignement ou protection des matériaux combustibles, surveillance continue pendant les travaux et ronde de surveillance 2 h après la fin des travaux.",
+    moyens:"Pistolet à air chaud (aucun chalumeau), permis feu, extincteurs adaptés à proximité immédiate, écrans thermiques."
   },
   {
     id:"electrique", coche:false,
@@ -399,7 +418,7 @@ const RISQUES_ATTILA = [
     moyens:"Habilitations électriques à jour (a minima H0B0), VAT, EPI isolants si requis."
   },
   {
-    id:"manutention", coche:true,
+    id:"manutention", coche:false,
     titre:"Manutention manuelle et approvisionnement en toiture",
     regle:"Limitation du port de charges, priorité aux moyens mécaniques de levage.",
     action:"Levage par grue auxiliaire ou monte-matériaux avec zone d'exclusion au sol, élingage contrôlé, gestes et postures.",
@@ -413,18 +432,18 @@ const RISQUES_ATTILA = [
     moyens:"FDS, gants adaptés (nitrile/néoprène selon produit), lunettes, protection respiratoire si prescrite par la FDS."
   },
   {
-    id:"meteo", coche:true,
-    titre:"Conditions météorologiques",
-    regle:"Arrêt immédiat des travaux en hauteur en cas de vent fort (rafales ≥ 50 km/h), d'orage, de verglas ou de toiture glissante (pluie, gel, mousse).",
-    action:"Consultation météo avant chaque prise de poste, décision d'arrêt par le chef d'équipe sans validation hiérarchique préalable (droit d'arrêt).",
-    moyens:"Application météo, anémomètre si nécessaire, consigne d'arrêt de travaux affichée."
-  },
-  {
-    id:"coactivite", coche:true,
+    id:"coactivite", coche:false,
     titre:"Co-activité et circulation sur le site client",
     regle:"Respect du plan de circulation du site. Séparation des flux piétons / engins. Stationnement des véhicules ATTILA en marche arrière pour permettre un départ en sécurité et une évacuation rapide.",
     action:"Accueil sécurité du site suivi par chaque intervenant, stationnement en marche arrière en zone autorisée, balisage des cheminements, vigilance mutuelle avec les engins du site.",
     moyens:"Gilets haute visibilité, plan de circulation remis par le client, balisage, avertisseur de recul des véhicules."
+  },
+  {
+    id:"atex", coche:false,
+    titre:"Atmosphères explosives (ATEX)",
+    regle:"Aucune intervention en zone ATEX sans identification préalable des zones par l'entreprise utilisatrice (zonage du DRPCE) et sans autorisation de travail spécifique du site.",
+    action:"Repérage des zones ATEX avec le client lors de l'inspection commune, respect strict de la signalisation, aucun point chaud ni aucune source d'ignition en zone, permis de travail spécifique, ventilation contrôlée.",
+    moyens:"Matériel et outillage certifiés ATEX en zone, vêtements et chaussures antistatiques, détecteur de gaz si requis par le site, permis de travail, consignes ATEX du site."
   }
 ];
 
@@ -439,11 +458,12 @@ const ICONES = {
   "drone": ico(`<rect x="15.5" y="18" width="9" height="4.5" rx="2.2" fill="#fff"/><path d="M17 18.5l-5-4.5m16 4.5l5-4.5" stroke="#fff" stroke-width="2"/><path d="M7.5 13.5h9M23.5 13.5h9" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M18 25l2 4 2-4" stroke="#fff" stroke-width="1.6" fill="none"/>`),
   "chute-objets": ico(`<rect x="16" y="9.5" width="8" height="8" fill="#fff" transform="rotate(14 20 13.5)"/><path d="M20 21.5v8m0 0l-3.2-3.2m3.2 3.2l3.2-3.2" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>`),
   "amiante": ico(`<path d="M12.5 19.5a7.5 6 0 0 1 15 0v3.5a7.5 6 0 0 1-15 0z" fill="#fff"/><circle cx="20" cy="22" r="2.6" fill="#C0392B"/><path d="M12.5 20L8 17m23.5 3l4.5-3" stroke="#fff" stroke-width="1.8"/>`),
-  "point-chaud": ico(`<path d="M20 8.5c3 4.5 7.5 6.5 7.5 12.5a7.5 7.5 0 0 1-15 0c0-4 2-5.5 3.2-8.5 1 2.2 2 3.2 4 4.2-1.2-3.2-.2-5.2.3-8.2z" fill="#fff"/>`),
+  "incendie": ico(`<path d="M20 8.5c3 4.5 7.5 6.5 7.5 12.5a7.5 7.5 0 0 1-15 0c0-4 2-5.5 3.2-8.5 1 2.2 2 3.2 4 4.2-1.2-3.2-.2-5.2.3-8.2z" fill="#fff"/>`),
   "electrique": ico(`<path d="M22.5 8l-9.5 14.5h6L17 32l10.5-15.5h-6z" fill="#fff"/>`),
   "manutention": ico(`<circle cx="14.5" cy="11.5" r="3" fill="#fff"/><path d="M14 15.5v8.5l-2.5 6m3-8.5h6" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/><rect x="21.5" y="15.5" width="8.5" height="8.5" fill="none" stroke="#fff" stroke-width="2"/>`),
   "chimique": ico(`<path d="M17 9h6m-5 0v6.5l6 10.5a2 2 0 0 1-1.8 3H13.8a2 2 0 0 1-1.8-3l6-10.5V9" stroke="#fff" stroke-width="2.1" fill="none" stroke-linecap="round"/><path d="M14.5 24h11" stroke="#fff" stroke-width="2.1"/>`),
   "meteo": ico(`<path d="M13.5 21.5a4.8 4.8 0 0 1 .8-9.5A6 6 0 0 1 26 12.8a4.4 4.4 0 0 1 .8 8.7z" fill="#fff"/><path d="M11 26.5h12.5M14.5 30.5h9" stroke="#fff" stroke-width="2.1" stroke-linecap="round"/>`),
+  "atex": ico(`<path d="M20 8l11 19H9z" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><path d="M20 15v6" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="20" cy="24.5" r="1.7" fill="#fff"/><path d="M13 31h14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 2.5"/>`),
   "coactivite": ico(`<rect x="8.5" y="16.5" width="12.5" height="8.5" rx="1.2" fill="#fff"/><path d="M21 19.5h6.2l3.3 4v1.5H21z" fill="#fff"/><circle cx="13.5" cy="27.5" r="2.4" fill="#C0392B" stroke="#fff" stroke-width="1.6"/><circle cx="26" cy="27.5" r="2.4" fill="#C0392B" stroke="#fff" stroke-width="1.6"/><path d="M11 13.5l-3 3 3 3" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>`)
 };
 
@@ -467,9 +487,9 @@ RISQUES_ATTILA.forEach(r=>{
   div.className = "risque" + (r.coche ? " actif":"");
   div.innerHTML = `
     <label class="risque-tete" style="text-transform:none;letter-spacing:0;color:inherit;margin:0">
-      <input type="checkbox" data-id="${r.id}" ${r.coche?"checked":""}>
+      <input type="checkbox" data-id="${r.id}" ${r.coche?"checked":""} ${r.obligatoire?"disabled":""}>
       <span class="risque-icone">${ICONES[r.id]||""}</span>
-      <span class="titre">${r.titre}</span>
+      <span class="titre">${r.titre}${r.obligatoire?'<span class="badge-oblig">Obligatoire</span>':""}</span>
     </label>
     <div class="risque-detail">
       <dl class="rap">
