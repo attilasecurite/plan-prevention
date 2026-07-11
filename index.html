@@ -60,6 +60,13 @@
   .droit-retrait h3{font-size:16px;color:var(--rouge);margin-bottom:6px;display:flex;align-items:center;gap:8px}
   .droit-retrait p{font-size:14px;line-height:1.5}
   .droit-retrait .base-legale{font-size:11.5px;color:var(--gris);margin-top:8px;font-style:italic}
+  .btn-geoloc{background:#fff;border:1.5px solid var(--rouge);color:var(--rouge);font-weight:700;font-size:13px;border-radius:5px;padding:7px 12px;cursor:pointer;margin-top:6px}
+  .btn-geoloc:hover{background:#fdf3f2}
+  .btn-geoloc:disabled{opacity:.5;cursor:wait}
+  .photo-sst{display:flex;align-items:center;gap:12px;margin-top:6px}
+  .photo-sst img{width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid var(--rouge);display:none}
+  .bandeau-brouillon{display:none;background:#fff8e6;border:1px solid #e8c96a;border-radius:5px;padding:10px 14px;margin:14px 0 0;font-size:13.5px;color:#7a5c00}
+  .bandeau-brouillon button{background:none;border:none;color:#7a5c00;text-decoration:underline;cursor:pointer;font-size:13px;margin-left:8px}
   .badge-oblig{background:var(--rouge);color:#fff;font-family:Calibri,sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:3px;padding:2px 7px;margin-left:8px;vertical-align:middle;white-space:nowrap}
 
   .ligne-client{border:1px solid var(--ligne);border-left:4px solid var(--encre);border-radius:4px;padding:12px;margin-bottom:12px;position:relative}
@@ -113,6 +120,10 @@
 </div>
 
 <main>
+<div class="bandeau-brouillon" id="bandeau-brouillon">
+  &#128190; Brouillon restauré (<span id="brouillon-heure"></span>) — photos et signatures sont à refaire.
+  <button type="button" onclick="effacerBrouillon()">Repartir de zéro</button>
+</div>
 
 <!-- ================= 1. PARTIES ================= -->
 <section>
@@ -121,7 +132,10 @@
     <fieldset>
       <div class="colonne-entete">Entreprise utilisatrice (client / donneur d'ordre)</div>
       <div class="champ"><label for="eu-nom">Raison sociale</label><input type="text" id="eu-nom"></div>
-      <div class="champ"><label for="eu-adresse">Adresse du site</label><input type="text" id="eu-adresse"></div>
+      <div class="champ"><label for="eu-adresse">Adresse du site</label><input type="text" id="eu-adresse">
+        <button type="button" class="btn-geoloc" id="btn-geoloc" onclick="geolocaliser()">&#128205; Utiliser ma position</button>
+        <div class="aide" id="geoloc-aide">Remplit l'adresse depuis le GPS du téléphone et joint les coordonnées au plan (preuve d'établissement sur site).</div>
+      </div>
       <div class="champ"><label for="eu-rep">Représentant (nom, fonction)</label><input type="text" id="eu-rep"></div>
       <div class="champ"><label for="eu-mail">E-mail (envoi du plan signé)</label><input type="email" id="eu-mail" required></div>
       <div class="champ"><label for="eu-tel">Téléphone</label><input type="text" id="eu-tel"></div>
@@ -209,7 +223,14 @@
 <section>
   <div class="cartouche-titre"><span class="num">7</span> Consignes du site &amp; organisation des secours <span style="font-weight:400;font-size:12.5px">(art. R.&nbsp;4512-8)</span></div>
   <div class="corps grille">
-    <div class="champ"><label for="sec-sst">Sauveteur secouriste sur site (SST)</label><input type="text" id="sec-sst"></div>
+    <div class="champ"><label for="sec-sst">Sauveteur secouriste sur site (SST)</label><input type="text" id="sec-sst">
+      <div class="photo-sst">
+        <img id="sst-apercu" alt="Photo du SST">
+        <input type="file" id="sst-photo-input" accept="image/*" style="display:none" onchange="chargerPhotoSst(this.files)">
+        <button type="button" class="btn-geoloc" onclick="document.getElementById('sst-photo-input').click()">&#128247; Photo du SST</button>
+      </div>
+      <div class="aide">La photo permet à l'équipe d'identifier immédiatement le SST. Intégrée au PDF.</div>
+    </div>
     <div class="champ"><label for="sec-urgence">N° d'urgence interne / poste de garde</label><input type="text" id="sec-urgence"></div>
     <div class="champ"><label for="sec-rassemblement">Point de rassemblement</label><input type="text" id="sec-rassemblement"></div>
     <div class="champ"><label for="sec-acces">Accès secours / adresse à communiquer au 15-18-112</label><input type="text" id="sec-acces"></div>
@@ -387,6 +408,13 @@ const RISQUES_ATTILA = [
     moyens:"Application météo, anémomètre si nécessaire, hydratation et aménagement des horaires en cas de chaleur, consigne d'arrêt de travaux affichée."
   },
   {
+    id:"travail-isole", coche:true,
+    titre:"Travail isolé",
+    regle:"Jamais seul en toiture non sécurisée : intervention en binôme obligatoire. Le travail seul n'est envisageable que sur toiture équipée de protections collectives conformes (garde-corps périphériques) et après validation de l'agence.",
+    action:"Organisation systématique en binôme, vérification de la couverture réseau du site à la prise de poste, points de contact réguliers avec l'agence pour les interventions longues.",
+    moyens:"Binôme, téléphone chargé, DATI / dispositif PTI si une phase isolée est inévitable, numéros d'urgence du site affichés (voir section secours)."
+  },
+  {
     id:"nacelle", coche:false,
     titre:"Travaux en nacelle (PEMP)",
     regle:"Conduite de la PEMP réservée au personnel titulaire du CACES R486 en cours de validité et d'une autorisation de conduite délivrée par l'employeur.",
@@ -458,6 +486,7 @@ function ico(glyphe){
 const ICONES = {
   "epi-base": ico(`<path d="M13 23a7 7 0 0 1 14 0v1H13z" fill="#fff"/><rect x="10" y="24" width="20" height="3.2" rx="1.6" fill="#fff"/>`),
   "chute-hauteur": ico(`<circle cx="16" cy="12" r="3" fill="#fff"/><path d="M15 16l5 5-2 8" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M28 11v11m0 0l-3.2-3.2M28 22l3.2-3.2" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>`),
+  "travail-isole": ico(`<circle cx="16" cy="13" r="3.2" fill="#fff"/><path d="M16 17.5v8l-2.5 5.5m2.5-13.5l2.5 5-1 8.5" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/><path d="M25 12a6 6 0 0 1 0 8M28.5 9.5a10 10 0 0 1 0 13" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>`),
   "nacelle": ico(`<rect x="21" y="10" width="9" height="6.5" fill="none" stroke="#fff" stroke-width="2"/><path d="M21 16L12 26" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><rect x="8.5" y="25.5" width="13" height="4" rx="1.3" fill="#fff"/><circle cx="12" cy="31.5" r="1.9" fill="#fff"/><circle cx="18" cy="31.5" r="1.9" fill="#fff"/>`),
   "drone": ico(`<rect x="15.5" y="18" width="9" height="4.5" rx="2.2" fill="#fff"/><path d="M17 18.5l-5-4.5m16 4.5l5-4.5" stroke="#fff" stroke-width="2"/><path d="M7.5 13.5h9M23.5 13.5h9" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M18 25l2 4 2-4" stroke="#fff" stroke-width="1.6" fill="none"/>`),
   "chute-objets": ico(`<rect x="16" y="9.5" width="8" height="8" fill="#fff" transform="rotate(14 20 13.5)"/><path d="M20 21.5v8m0 0l-3.2-3.2m3.2 3.2l3.2-3.2" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>`),
@@ -583,6 +612,125 @@ function afficherPhoto(photo){
   document.getElementById("photos-grille").appendChild(div);
 }
 
+/* ================= GÉOLOCALISATION ================= */
+let gps = null;
+function geolocaliser(){
+  const aide = document.getElementById("geoloc-aide");
+  const btn = document.getElementById("btn-geoloc");
+  if(!navigator.geolocation){ aide.textContent = "Géolocalisation non disponible sur cet appareil."; return; }
+  btn.disabled = true; aide.textContent = "Recherche de la position…";
+  navigator.geolocation.getCurrentPosition(pos=>{
+    gps = { lat: +pos.coords.latitude.toFixed(6), lon: +pos.coords.longitude.toFixed(6),
+            precision: Math.round(pos.coords.accuracy) };
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${gps.lat}&lon=${gps.lon}&accept-language=fr`)
+      .then(r=>r.json())
+      .then(rep=>{
+        const a = rep.address || {};
+        const adresse = [ [a.house_number, a.road].filter(Boolean).join(" "),
+                          [a.postcode, a.village || a.town || a.city].filter(Boolean).join(" ") ]
+                        .filter(Boolean).join(", ");
+        if(adresse) document.getElementById("eu-adresse").value = adresse;
+        aide.textContent = `Position relevée (précision ±${gps.precision} m) — vérifier l'adresse proposée.`;
+      })
+      .catch(()=>{ aide.textContent = `Position GPS relevée (±${gps.precision} m), adresse à saisir manuellement.`; })
+      .finally(()=>{ btn.disabled = false; });
+  }, ()=>{ btn.disabled = false; aide.textContent = "Position refusée ou indisponible — vérifier les autorisations du navigateur."; },
+  { enableHighAccuracy:true, timeout:12000 });
+}
+
+/* ================= PHOTO DU SST ================= */
+let photoSst = "";
+function chargerPhotoSst(fichiers){
+  if(!fichiers.length) return;
+  const lecteur = new FileReader();
+  lecteur.onload = ev=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const MAX = 500;
+      const e = Math.min(1, MAX / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width*e); c.height = Math.round(img.height*e);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      photoSst = c.toDataURL("image/jpeg", 0.75);
+      const ap = document.getElementById("sst-apercu");
+      ap.src = photoSst; ap.style.display = "block";
+    };
+    img.src = ev.target.result;
+  };
+  lecteur.readAsDataURL(fichiers[0]);
+  document.getElementById("sst-photo-input").value = "";
+}
+
+/* ================= BROUILLON AUTOMATIQUE ================= */
+const CLE_BROUILLON = "pp_brouillon";
+let minuterieBrouillon = null;
+
+function sauverBrouillon(){
+  clearTimeout(minuterieBrouillon);
+  minuterieBrouillon = setTimeout(()=>{
+    try{
+      const champs = {};
+      document.querySelectorAll("input[id],textarea[id],select[id]").forEach(el=>{
+        if(el.type==="file" || el.type==="checkbox") return;
+        champs[el.id] = el.value;
+      });
+      const risques = {};
+      document.querySelectorAll('#risques-attila input[type=checkbox]').forEach(cb=>{
+        risques[cb.dataset.id] = cb.checked;
+      });
+      const clients = [...document.querySelectorAll(".ligne-client")].map(l=>({
+        risque:l.querySelector(".rc-risque").value,
+        regle:l.querySelector(".rc-regle").value,
+        action:l.querySelector(".rc-action").value,
+        mesures:[...l.querySelectorAll(".rc-mesure")].map(m=>m.value)
+      }));
+      localStorage.setItem(CLE_BROUILLON, JSON.stringify({champs, risques, clients, ts: Date.now()}));
+    }catch(e){ /* stockage local indisponible : on continue sans brouillon */ }
+  }, 800);
+}
+document.addEventListener("input", sauverBrouillon);
+document.addEventListener("change", sauverBrouillon);
+
+function restaurerBrouillon(){
+  let b = null;
+  try{ b = JSON.parse(localStorage.getItem(CLE_BROUILLON)); }catch(e){}
+  if(!b || !b.champs) return;
+  Object.entries(b.champs).forEach(([id, val])=>{
+    const el = document.getElementById(id);
+    if(el && val) el.value = val;
+  });
+  Object.entries(b.risques || {}).forEach(([id, coche])=>{
+    const cb = document.querySelector(`input[data-id="${id}"]`);
+    if(cb && !cb.disabled){ cb.checked = coche; cb.closest(".risque").classList.toggle("actif", coche); }
+  });
+  if(b.clients && b.clients.length){
+    document.getElementById("risques-client").innerHTML = "";
+    compteurClient = 0;
+    b.clients.forEach(rc=>{
+      ajouterRisqueClient();
+      const l = document.querySelector(".ligne-client:last-child");
+      l.querySelector(".rc-risque").value = rc.risque || "";
+      l.querySelector(".rc-regle").value = rc.regle || "";
+      l.querySelector(".rc-action").value = rc.action || "";
+      const btnM = l.querySelector(".btn-ajout.secondaire");
+      (rc.mesures || [""]).forEach((m, i)=>{
+        if(i > 0) ajouterMesure(btnM);
+        const zones = l.querySelectorAll(".rc-mesure");
+        zones[zones.length-1].value = m;
+      });
+    });
+  }
+  const d = new Date(b.ts);
+  document.getElementById("brouillon-heure").textContent =
+    d.toLocaleDateString("fr-FR") + " à " + d.toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit"});
+  document.getElementById("bandeau-brouillon").style.display = "block";
+}
+function effacerBrouillon(){
+  try{ localStorage.removeItem(CLE_BROUILLON); }catch(e){}
+  location.reload();
+}
+window.addEventListener("DOMContentLoaded", restaurerBrouillon);
+
 /* ================= SIGNATURES ================= */
 function initSignature(id){
   const c = document.getElementById(id);
@@ -666,8 +814,9 @@ function valider(){
       mesures:[...l.querySelectorAll(".rc-mesure")].map(m=>m.value.trim()).filter(Boolean)
     })).filter(r=>r.risque),
     photos: photos.map(p=>({image:p.image, legende:p.legende})),
+    geolocalisation: gps,
     secours: {
-      sst:v("sec-sst"), urgence:v("sec-urgence"),
+      sst:v("sec-sst"), photoSst:photoSst, urgence:v("sec-urgence"),
       rassemblement:v("sec-rassemblement"), acces:v("sec-acces"),
       consignes:v("sec-consignes")
     },
@@ -694,6 +843,7 @@ function valider(){
   .then(r=>r.json())
   .then(rep=>{
     statut.className = "statut ok";
+    try{ localStorage.removeItem(CLE_BROUILLON); }catch(e){}
     statut.textContent = "Plan de prévention horodaté le " + rep.horodatage +
       " (réf. " + rep.reference + "). PDF envoyé à " + donnees.entrepriseUtilisatrice.email +
       " et " + donnees.entrepriseExterieure.email + ".";
