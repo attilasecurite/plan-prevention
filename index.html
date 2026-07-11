@@ -60,6 +60,38 @@
   .droit-retrait h3{font-size:16px;color:var(--rouge);margin-bottom:6px;display:flex;align-items:center;gap:8px}
   .droit-retrait p{font-size:14px;line-height:1.5}
   .droit-retrait .base-legale{font-size:11.5px;color:var(--gris);margin-top:8px;font-style:italic}
+  .nature-grille{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  @media(max-width:640px){.nature-grille{grid-template-columns:1fr}}
+  .nature-case{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--ligne);border-radius:4px;padding:9px 11px;cursor:pointer;background:var(--fond-doux)}
+  .nature-case:has(input:checked){border-color:var(--rouge);background:#fff}
+  .nature-case input{width:17px;height:17px;margin-top:1px;accent-color:var(--rouge);flex-shrink:0}
+  .nature-case b{font-size:14px;display:block}
+  .nature-case span{font-size:12px;color:var(--gris)}
+  .puces-horaires{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .puce{background:var(--fond-doux);border:1px solid var(--ligne);border-radius:14px;padding:5px 12px;font-size:12.5px;font-weight:700;color:var(--gris);cursor:pointer}
+  .puce:hover,.puce.active{border-color:var(--rouge);color:var(--rouge);background:#fdf3f2}
+  .plage-affichage{font-size:16px;margin-bottom:6px;text-align:center}
+  .plage-affichage b{color:var(--rouge);font-family:Cambria,serif;font-size:18px}
+  .plage-conteneur{position:relative;height:40px}
+  .plage-piste{position:absolute;top:17px;left:0;right:0;height:6px;border-radius:3px;background:var(--ligne)}
+  .plage-conteneur input[type=range]{position:absolute;top:8px;left:0;width:100%;height:24px;margin:0;background:transparent;-webkit-appearance:none;appearance:none;pointer-events:none}
+  .plage-conteneur input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:var(--rouge);border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);cursor:grab;pointer-events:auto}
+  .plage-conteneur input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--rouge);border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);cursor:grab;pointer-events:auto}
+  .plage-bornes{display:flex;justify-content:space-between;font-size:11px;color:var(--gris);margin-top:2px}
+  .case-puce{display:inline-flex;align-items:center;background:var(--fond-doux);border:1px solid var(--ligne);border-radius:14px;padding:6px 13px;font-size:13px;font-weight:700;color:var(--gris);cursor:pointer;text-transform:none;letter-spacing:0;margin:0}
+  .case-puce input{position:absolute;opacity:0;width:0;height:0}
+  .case-puce:has(input:checked){border-color:var(--rouge);color:var(--rouge);background:#fdf3f2}
+  .groupe-puces{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .stepper{display:flex;align-items:center;gap:0;width:fit-content}
+  .stepper button{width:42px;height:42px;font-size:22px;font-weight:700;background:#fff;border:1px solid var(--ligne);color:var(--rouge);cursor:pointer}
+  .stepper button:first-child{border-radius:5px 0 0 5px}
+  .stepper button:last-child{border-radius:0 5px 5px 0}
+  .stepper input{width:64px;height:42px;text-align:center;border-radius:0;border-left:none;border-right:none;font-size:17px;font-weight:700}
+  .urgences-fixes{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+  .urgences-fixes span{background:#fdf6f5;border:1.5px solid var(--rouge);border-radius:5px;padding:5px 11px;font-size:12.5px;color:var(--encre);white-space:nowrap}
+  .urgences-fixes b{color:var(--rouge);font-family:Cambria,serif;font-size:16px;margin-right:4px}
+  .btn-mini{background:none;border:1px solid var(--ligne);border-radius:4px;color:var(--rouge);cursor:pointer;font-size:12px;font-weight:700;padding:4px 10px;margin-top:5px}
+  .btn-mini:hover{border-color:var(--rouge);background:#fdf3f2}
   .btn-geoloc{background:#fff;border:1.5px solid var(--rouge);color:var(--rouge);font-weight:700;font-size:13px;border-radius:5px;padding:7px 12px;cursor:pointer;margin-top:6px}
   .btn-geoloc:hover{background:#fdf3f2}
   .btn-geoloc:disabled{opacity:.5;cursor:wait}
@@ -138,7 +170,7 @@
       </div>
       <div class="champ"><label for="eu-rep">Représentant (nom, fonction)</label><input type="text" id="eu-rep"></div>
       <div class="champ"><label for="eu-mail">E-mail (envoi du plan signé)</label><input type="email" id="eu-mail" required></div>
-      <div class="champ"><label for="eu-tel">Téléphone</label><input type="text" id="eu-tel"></div>
+      <div class="champ"><label for="eu-tel">Téléphone</label><input type="tel" id="eu-tel" inputmode="tel"></div>
     </fieldset>
     <fieldset>
       <div class="colonne-entete">Entreprise extérieure — Agence ATTILA</div>
@@ -150,7 +182,13 @@
       <div class="champ"><label for="ee-adresse">Adresse de l'agence</label><input type="text" id="ee-adresse"></div>
       <div class="champ"><label for="ee-rep">Représentant (nom, fonction)</label><input type="text" id="ee-rep"></div>
       <div class="champ"><label for="ee-mail">E-mail (copie du plan signé)</label><input type="email" id="ee-mail" required></div>
-      <div class="champ"><label for="ee-effectif">Effectif prévu sur site</label><input type="text" id="ee-effectif"></div>
+      <div class="champ"><label for="ee-effectif">Effectif prévu sur site</label>
+        <div class="stepper">
+          <button type="button" onclick="pas('ee-effectif',-1)">&minus;</button>
+          <input type="number" id="ee-effectif" value="2" min="1" max="30" inputmode="numeric">
+          <button type="button" onclick="pas('ee-effectif',1)">+</button>
+        </div>
+      </div>
     </fieldset>
   </div>
 </section>
@@ -159,14 +197,62 @@
 <section>
   <div class="cartouche-titre"><span class="num">2</span> Nature et durée de l'opération</div>
   <div class="corps">
-    <div class="champ"><label for="op-nature">Nature des travaux</label>
-      <textarea id="op-nature" placeholder="Ex. : recherche de fuite, réparation d'étanchéité membrane bitumineuse, remplacement de plaques de couverture…"></textarea>
+    <div class="champ"><label>Nature des travaux (univers de services ATTILA — plusieurs choix possibles)</label>
+      <div class="nature-grille">
+        <label class="nature-case" style="text-transform:none;letter-spacing:0;color:inherit;font-weight:400">
+          <input type="checkbox" id="nat-diagnostic" value="Diagnostic">
+          <span><b>Diagnostic</b><span>Bilan toiture par drone, recherche de fuites, diagnostic toiture amiantée SS4</span></span>
+        </label>
+        <label class="nature-case" style="text-transform:none;letter-spacing:0;color:inherit;font-weight:400">
+          <input type="checkbox" id="nat-entretien" value="Entretien">
+          <span><b>Entretien</b><span>Visites programmées, nettoyage des chéneaux, démoussage, prévention des désordres</span></span>
+        </label>
+        <label class="nature-case" style="text-transform:none;letter-spacing:0;color:inherit;font-weight:400">
+          <input type="checkbox" id="nat-reparation" value="Réparation">
+          <span><b>Réparation</b><span>Réparations ciblées, traitement des infiltrations, reprise des points singuliers</span></span>
+        </label>
+        <label class="nature-case" style="text-transform:none;letter-spacing:0;color:inherit;font-weight:400">
+          <input type="checkbox" id="nat-amelioration" value="Amélioration">
+          <span><b>Amélioration</b><span>Apports en lumière, étanchéité et isolation renforcées, sécurité et accès toiture</span></span>
+        </label>
+        <label class="nature-case" style="text-transform:none;letter-spacing:0;color:inherit;font-weight:400">
+          <input type="checkbox" id="nat-urgence" value="Urgence">
+          <span><b>Urgence</b><span>Mise hors d'eau rapide, bâchage professionnel, sécurisation des zones à risque</span></span>
+        </label>
+      </div>
+      <input type="text" id="op-nature-autre" placeholder="Autre nature de travaux ou précisions (libre)">
     </div>
     <div class="grille">
       <div class="champ"><label for="op-debut">Date de début</label><input type="date" id="op-debut"></div>
       <div class="champ"><label for="op-fin">Date de fin prévue</label><input type="date" id="op-fin"></div>
-      <div class="champ"><label for="op-lieu">Lieu exact d'intervention</label><input type="text" id="op-lieu" placeholder="Toiture bâtiment B, versant nord…"></div>
-      <div class="champ"><label for="op-horaires">Horaires d'intervention</label><input type="text" id="op-horaires" placeholder="8h00 – 17h00"></div>
+      <div class="champ" style="grid-column:1/-1"><label>Lieu exact d'intervention</label>
+        <div class="groupe-puces">
+          <label class="case-puce"><input type="checkbox" id="lieu-toiture" value="Toiture principale">Toiture principale</label>
+          <label class="case-puce"><input type="checkbox" id="lieu-terrasse" value="Terrasse">Terrasse</label>
+          <label class="case-puce"><input type="checkbox" id="lieu-nord" value="Versant nord">Versant nord</label>
+          <label class="case-puce"><input type="checkbox" id="lieu-sud" value="Versant sud">Versant sud</label>
+          <label class="case-puce"><input type="checkbox" id="lieu-est" value="Versant est">Versant est</label>
+          <label class="case-puce"><input type="checkbox" id="lieu-ouest" value="Versant ouest">Versant ouest</label>
+          <label class="case-puce"><input type="checkbox" id="lieu-ensemble" value="Ensemble de la toiture">Ensemble de la toiture</label>
+          <label class="case-puce"><input type="checkbox" id="lieu-local" value="Local technique">Local technique</label>
+        </div>
+        <input type="text" id="op-lieu" placeholder="Précision libre (bâtiment B, zone de stockage…)">
+      </div>
+      <div class="champ"><label>Horaires d'intervention</label>
+        <div class="puces-horaires">
+          <button type="button" class="puce" onclick="horairesRapides(this,'08:00','17:00')">Journée 8h–17h</button>
+          <button type="button" class="puce" onclick="horairesRapides(this,'08:00','12:00')">Matin</button>
+          <button type="button" class="puce" onclick="horairesRapides(this,'13:00','17:00')">Après-midi</button>
+          <button type="button" class="puce" onclick="horairesRapides(this,'07:00','15:00')">7h–15h</button>
+        </div>
+        <div class="plage-affichage">de <b id="aff-debut">08:00</b> à <b id="aff-fin">17:00</b></div>
+        <div class="plage-conteneur">
+          <div class="plage-piste" id="plage-piste"></div>
+          <input type="range" id="op-heure-debut" min="300" max="1260" step="30" value="480" oninput="majPlage(this)">
+          <input type="range" id="op-heure-fin" min="300" max="1260" step="30" value="1020" oninput="majPlage(this)">
+        </div>
+        <div class="plage-bornes"><span>5h</span><span>9h</span><span>13h</span><span>17h</span><span>21h</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -175,13 +261,22 @@
 <section>
   <div class="cartouche-titre"><span class="num">3</span> Inspection commune préalable <span style="font-weight:400;font-size:12.5px">(art. R.&nbsp;4512-2)</span></div>
   <div class="corps grille">
-    <div class="champ"><label for="ic-date">Date de l'inspection</label><input type="date" id="ic-date"></div>
+    <div class="champ"><label for="ic-date">Date de l'inspection</label><input type="date" id="ic-date">
+      <button type="button" class="btn-mini" onclick="inspectionMaintenant()">&#9200; Maintenant</button>
+    </div>
     <div class="champ"><label for="ic-heure">Heure</label><input type="time" id="ic-heure"></div>
     <div class="champ" style="grid-column:1/-1"><label for="ic-participants">Participants</label>
       <input type="text" id="ic-participants" placeholder="Noms et fonctions des participants EU et EE">
+      <button type="button" class="btn-mini" onclick="copierParticipants()">&#8635; Reprendre les deux représentants</button>
     </div>
-    <div class="champ" style="grid-column:1/-1"><label for="ic-obs">Observations (zones de danger, délimitation du secteur d'intervention, voies de circulation)</label>
-      <textarea id="ic-obs"></textarea>
+    <div class="champ" style="grid-column:1/-1"><label>Observations de l'inspection commune</label>
+      <div class="groupe-puces">
+        <label class="case-puce"><input type="checkbox" id="obs-delimite" value="Secteur d'intervention délimité">Secteur délimité</label>
+        <label class="case-puce"><input type="checkbox" id="obs-circulation" value="Voies de circulation repérées">Voies de circulation repérées</label>
+        <label class="case-puce"><input type="checkbox" id="obs-dangers" value="Zones de danger identifiées">Zones de danger identifiées</label>
+        <label class="case-puce"><input type="checkbox" id="obs-consignes" value="Consignes du site présentées">Consignes du site présentées</label>
+      </div>
+      <textarea id="ic-obs" placeholder="Observations complémentaires (libre)"></textarea>
     </div>
   </div>
 </section>
@@ -204,8 +299,9 @@
   <div class="cartouche-titre"><span class="num">5</span> Risques d'interférence propres au site <span style="font-weight:400;font-size:12.5px">(à compléter par le client)</span></div>
   <div class="corps">
     <p class="aide" style="margin-bottom:12px">L'entreprise utilisatrice déclare ici les risques générés par son activité, ses installations ou son environnement. Pour chaque risque : décrire la règle et l'action, puis ajouter autant de mesures de protection que nécessaire.</p>
+    <div class="groupe-puces" id="biblio-risques"></div>
     <div id="risques-client"></div>
-    <button type="button" class="btn-ajout" onclick="ajouterRisqueClient()">+ Ajouter un risque d'interférence</button>
+    <button type="button" class="btn-ajout" onclick="ajouterRisqueClient()">+ Ajouter un risque libre (saisie manuelle)</button>
   </div>
 </section>
 
@@ -231,11 +327,35 @@
       </div>
       <div class="aide">La photo permet à l'équipe d'identifier immédiatement le SST. Intégrée au PDF.</div>
     </div>
-    <div class="champ"><label for="sec-urgence">N° d'urgence interne / poste de garde</label><input type="text" id="sec-urgence"></div>
-    <div class="champ"><label for="sec-rassemblement">Point de rassemblement</label><input type="text" id="sec-rassemblement"></div>
-    <div class="champ"><label for="sec-acces">Accès secours / adresse à communiquer au 15-18-112</label><input type="text" id="sec-acces"></div>
-    <div class="champ" style="grid-column:1/-1"><label for="sec-consignes">Consignes particulières du site (accès, badges, permis de travail, sanitaires mis à disposition, consignation&hellip;)</label>
-      <textarea id="sec-consignes"></textarea>
+    <div class="champ"><label for="sec-urgence">N° d'urgence interne / poste de garde</label><input type="tel" id="sec-urgence" inputmode="tel">
+      <div class="urgences-fixes">
+        <span><b>18</b> Pompiers</span>
+        <span><b>15</b> SAMU</span>
+        <span><b>112</b> Urgences UE</span>
+      </div>
+    </div>
+    <div class="champ"><label>Point de rassemblement</label>
+      <div class="groupe-puces">
+        <label class="case-puce"><input type="checkbox" id="ras-parking" value="Parking">Parking</label>
+        <label class="case-puce"><input type="checkbox" id="ras-entree" value="Entrée principale">Entrée principale</label>
+        <label class="case-puce"><input type="checkbox" id="ras-portail" value="Portail">Portail</label>
+        <label class="case-puce"><input type="checkbox" id="ras-cour" value="Cour">Cour</label>
+      </div>
+      <input type="text" id="sec-rassemblement" placeholder="Précision libre">
+    </div>
+    <div class="champ"><label for="sec-acces">Accès secours / adresse à communiquer au 15-18-112</label><input type="text" id="sec-acces">
+      <button type="button" class="btn-mini" onclick="document.getElementById('sec-acces').value=document.getElementById('eu-adresse').value;sauverBrouillon()">= adresse du site</button>
+    </div>
+    <div class="champ" style="grid-column:1/-1"><label>Consignes particulières du site</label>
+      <div class="groupe-puces">
+        <label class="case-puce"><input type="checkbox" id="cons-badge" value="Badge / enregistrement à l'accueil obligatoire">Badge obligatoire</label>
+        <label class="case-puce"><input type="checkbox" id="cons-accueil" value="Accueil sécurité du site à suivre">Accueil sécurité</label>
+        <label class="case-puce"><input type="checkbox" id="cons-permis" value="Permis de travail du site requis">Permis de travail</label>
+        <label class="case-puce"><input type="checkbox" id="cons-sanitaires" value="Sanitaires mis à disposition par le site">Sanitaires mis à dispo</label>
+        <label class="case-puce"><input type="checkbox" id="cons-vitesse" value="Vitesse limitée sur le site">Vitesse limitée</label>
+        <label class="case-puce"><input type="checkbox" id="cons-consignation" value="Consignation d'installations requise avant intervention">Consignation requise</label>
+      </div>
+      <textarea id="sec-consignes" placeholder="Autres consignes (libre)"></textarea>
     </div>
   </div>
 </section>
@@ -246,7 +366,9 @@
   <div class="corps grille">
     <div class="sig-bloc">
       <div class="colonne-entete">Entreprise utilisatrice</div>
-      <div class="champ"><label for="sig-eu-nom">Nom et fonction du signataire</label><input type="text" id="sig-eu-nom"></div>
+      <div class="champ"><label for="sig-eu-nom">Nom et fonction du signataire</label><input type="text" id="sig-eu-nom">
+        <button type="button" class="btn-mini" onclick="document.getElementById('sig-eu-nom').value=document.getElementById('eu-rep').value;sauverBrouillon()">= représentant client</button>
+      </div>
       <canvas class="signature" id="sig-eu"></canvas>
       <div class="sig-actions">
         <span class="mention">Signature manuscrite (doigt ou souris)</span>
@@ -255,7 +377,9 @@
     </div>
     <div class="sig-bloc">
       <div class="colonne-entete">Entreprise extérieure — ATTILA</div>
-      <div class="champ"><label for="sig-ee-nom">Nom et fonction du signataire</label><input type="text" id="sig-ee-nom"></div>
+      <div class="champ"><label for="sig-ee-nom">Nom et fonction du signataire</label><input type="text" id="sig-ee-nom">
+        <button type="button" class="btn-mini" onclick="document.getElementById('sig-ee-nom').value=document.getElementById('ee-rep').value;sauverBrouillon()">= représentant ATTILA</button>
+      </div>
       <canvas class="signature" id="sig-ee"></canvas>
       <div class="sig-actions">
         <span class="mention">Signature manuscrite (doigt ou souris)</span>
@@ -271,6 +395,11 @@
   <div class="statut" id="statut"></div>
 </div>
 
+<datalist id="legendes-types">
+  <option value="Accès au site"></option><option value="Zone d'intervention"></option>
+  <option value="Point fragile"></option><option value="Balisage en place"></option>
+  <option value="Vue d'ensemble toiture"></option><option value="Point de rassemblement"></option>
+</datalist>
 </main>
 
 <script>
@@ -539,6 +668,125 @@ RISQUES_ATTILA.forEach(r=>{
   contRA.appendChild(div);
 });
 
+/* ================= BIBLIOTHÈQUE DE RISQUES D'INTERFÉRENCE ================= */
+const BIBLIO_RISQUES = [
+  { titre:"Circulation d'engins / chariots",
+    risque:"Circulation de chariots élévateurs et d'engins sur le site",
+    regle:"Priorité aux engins du site. Respect du plan de circulation et des cheminements piétons.",
+    action:"Repérage des flux avec le client lors de l'inspection commune, cheminements piétons matérialisés, vigilance mutuelle.",
+    mesures:["Gilets haute visibilité","Cheminements piétons balisés","Contact visuel avec les caristes avant de traverser"] },
+  { titre:"Public / occupants présents",
+    risque:"Présence de public ou d'occupants dans le bâtiment pendant les travaux",
+    regle:"Aucun risque exporté vers les occupants : zone d'intervention et zone au sol condamnées au public.",
+    action:"Information des occupants par le client, condamnation des accès sous la zone de travaux, coordination des horaires si nécessaire.",
+    mesures:["Balisage et panneaux « chantier interdit au public »","Condamnation des accès sous zone","Information des occupants par le client"] },
+  { titre:"Activité du site maintenue",
+    risque:"Activité de production ou d'exploitation maintenue pendant l'intervention",
+    regle:"L'intervention ne doit pas interférer avec l'activité du site sans accord préalable.",
+    action:"Coordination des créneaux avec le responsable du site, identification des zones et périodes sensibles.",
+    mesures:["Planning d'intervention validé par le site","Interlocuteur du site joignable en permanence","Zones sensibles identifiées à l'inspection commune"] },
+  { titre:"Produits chimiques stockés",
+    risque:"Produits chimiques ou matières dangereuses stockés sur le site",
+    regle:"Aucune intervention à proximité des stockages sans identification préalable des produits et consignes du site.",
+    action:"Localisation des stockages avec le client, prise de connaissance des FDS et consignes du site, éloignement des points chauds.",
+    mesures:["Stockages localisés sur plan","Consignes du site respectées","Aucune source d'ignition à proximité"] },
+  { titre:"Réseaux / installations électriques",
+    risque:"Réseaux et installations électriques du site (armoires, lignes, panneaux photovoltaïques)",
+    regle:"Aucune intervention à proximité d'installations sous tension sans identification et consignation si nécessaire.",
+    action:"Identification des réseaux avec le client, consignation par le site si requise, distances de sécurité respectées.",
+    mesures:["Consignation par le site si nécessaire","Personnel habilité","Distances de sécurité aux lignes"] },
+  { titre:"Pont roulant / levage du site",
+    risque:"Pont roulant ou moyens de levage du site en service",
+    regle:"Aucune co-activité sous charge. Coordination obligatoire avec les opérateurs du site.",
+    action:"Neutralisation ou coordination du pont roulant pendant l'intervention en toiture, communication avec les opérateurs.",
+    mesures:["Pont roulant neutralisé ou coordonné","Moyen de communication avec l'opérateur","Zone d'interférence identifiée"] },
+  { titre:"Zone ATEX sur site",
+    risque:"Présence de zones à atmosphère explosive sur le site",
+    regle:"Aucune intervention en zone ATEX sans identification du zonage et autorisation du site (voir risque ATEX section 4).",
+    action:"Repérage du zonage avec le client, permis de travail spécifique, aucune source d'ignition en zone.",
+    mesures:["Zonage ATEX communiqué par le site","Permis de travail spécifique","Matériel certifié en zone"] },
+  { titre:"Accès restreints / zones réglementées",
+    risque:"Zones à accès restreint ou réglementé sur le site (sûreté, hygiène, process)",
+    regle:"Accès uniquement aux zones autorisées, accompagnement du site si requis.",
+    action:"Périmètre autorisé défini à l'inspection commune, badges/autorisations obtenus avant intervention.",
+    mesures:["Badges et autorisations du site","Périmètre autorisé tracé","Accompagnement par le site si requis"] },
+  { titre:"Circulation routière aux abords",
+    risque:"Circulation routière ou piétonne aux abords immédiats de la zone d'intervention",
+    regle:"Aucun débord de la zone de travaux sur la voirie sans balisage adapté.",
+    action:"Stationnement en marche arrière en zone autorisée, balisage du débord éventuel sur voirie ou trottoir.",
+    mesures:["Balisage de voirie (cônes, panneaux)","Stationnement en marche arrière","Gilets haute visibilité"] }
+];
+
+const biblio = document.getElementById("biblio-risques");
+BIBLIO_RISQUES.forEach((r, i)=>{
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "case-puce"; b.textContent = "+ " + r.titre;
+  b.onclick = ()=>{ ajouterRisqueType(i); b.disabled = true; b.style.opacity = .45; };
+  biblio.appendChild(b);
+});
+function ajouterRisqueType(i){
+  const r = BIBLIO_RISQUES[i];
+  ajouterRisqueClient();
+  const l = document.querySelector(".ligne-client:last-child");
+  l.querySelector(".rc-risque").value = r.risque;
+  l.querySelector(".rc-regle").value = r.regle;
+  l.querySelector(".rc-action").value = r.action;
+  const btnM = l.querySelector(".btn-ajout.secondaire");
+  r.mesures.forEach((m, j)=>{
+    if(j > 0) ajouterMesure(btnM);
+    const zones = l.querySelectorAll(".rc-mesure");
+    zones[zones.length-1].value = m;
+  });
+  sauverBrouillon();
+}
+
+/* ================= PETITS ASSISTANTS DE SAISIE ================= */
+function pas(id, delta){
+  const el = document.getElementById(id);
+  el.value = Math.min(+el.max || 99, Math.max(+el.min || 0, (+el.value || 0) + delta));
+  sauverBrouillon();
+}
+function inspectionMaintenant(){
+  const m = new Date();
+  document.getElementById("ic-date").value = m.toISOString().slice(0,10);
+  document.getElementById("ic-heure").value = String(m.getHours()).padStart(2,"0") + ":" + String(m.getMinutes()).padStart(2,"0");
+  sauverBrouillon();
+}
+function copierParticipants(){
+  const eu = document.getElementById("eu-rep").value.trim();
+  const ee = document.getElementById("ee-rep").value.trim();
+  document.getElementById("ic-participants").value =
+    [eu ? eu + " (client)" : "", ee ? ee + " (ATTILA)" : ""].filter(Boolean).join(" ; ");
+  sauverBrouillon();
+}
+function puces(prefixe){
+  return [...document.querySelectorAll(`.case-puce input[id^='${prefixe}-']:checked`)].map(c=>c.value);
+}
+
+/* ================= PROFIL ÉQUIPE MÉMORISÉ ================= */
+const CLE_PROFIL = "pp_profil";
+function sauverProfil(){
+  try{
+    localStorage.setItem(CLE_PROFIL, JSON.stringify({
+      agence:selAgence.value, adresse:v("ee-adresse"), mail:v("ee-mail"),
+      rep:v("ee-rep"), effectif:v("ee-effectif"), sst:v("sec-sst"), signataire:v("sig-ee-nom")
+    }));
+  }catch(e){}
+}
+function restaurerProfil(){
+  let p = null;
+  try{ p = JSON.parse(localStorage.getItem(CLE_PROFIL)); }catch(e){}
+  if(!p) return;
+  if(p.agence) selAgence.value = p.agence;
+  const cibles = {"ee-adresse":p.adresse, "ee-mail":p.mail, "ee-rep":p.rep,
+                  "ee-effectif":p.effectif, "sec-sst":p.sst, "sig-ee-nom":p.signataire};
+  Object.entries(cibles).forEach(([id, val])=>{
+    const el = document.getElementById(id);
+    if(el && val && !el.value) el.value = val;
+  });
+  if(p.agence) document.getElementById("ee-agence-aide").textContent = "Profil de l'équipe restauré — coordonnées du dernier plan envoyé.";
+}
+
 /* ================= RISQUES CLIENT (risque puis mesures) ================= */
 let compteurClient = 0;
 function ajouterRisqueClient(){
@@ -603,7 +851,7 @@ function afficherPhoto(photo){
   div.innerHTML = `
     <button type="button" class="suppr-photo">×</button>
     <img src="${photo.image}" alt="Photo du site">
-    <input type="text" placeholder="Légende…">`;
+    <input type="text" list="legendes-types" placeholder="Légende…">`;
   div.querySelector(".suppr-photo").addEventListener("click", ()=>{
     photos.splice(photos.indexOf(photo), 1);
     div.remove();
@@ -612,16 +860,58 @@ function afficherPhoto(photo){
   document.getElementById("photos-grille").appendChild(div);
 }
 
+/* ================= PLAGE HORAIRE (double curseur) ================= */
+function minutesEnHeure(m){
+  m = +m;
+  return String(Math.floor(m/60)).padStart(2,"0") + ":" + String(m%60).padStart(2,"0");
+}
+function majPlage(source){
+  const cd = document.getElementById("op-heure-debut");
+  const cf = document.getElementById("op-heure-fin");
+  // Les deux poignées ne se croisent jamais (30 min d'écart minimum)
+  if(+cd.value > +cf.value - 30){
+    if(source && source.id === "op-heure-debut") cd.value = +cf.value - 30;
+    else cf.value = +cd.value + 30;
+  }
+  document.getElementById("aff-debut").textContent = minutesEnHeure(cd.value);
+  document.getElementById("aff-fin").textContent = minutesEnHeure(cf.value);
+  const min = +cd.min, max = +cd.max;
+  const p1 = (cd.value - min) / (max - min) * 100;
+  const p2 = (cf.value - min) / (max - min) * 100;
+  document.getElementById("plage-piste").style.background =
+    `linear-gradient(to right, var(--ligne) ${p1}%, var(--rouge) ${p1}%, var(--rouge) ${p2}%, var(--ligne) ${p2}%)`;
+  if(source) document.querySelectorAll(".puce").forEach(p=>p.classList.remove("active"));
+}
+function horairesRapides(puce, debut, fin){
+  const [hd, md] = debut.split(":"); const [hf, mf] = fin.split(":");
+  document.getElementById("op-heure-debut").value = +hd*60 + +md;
+  document.getElementById("op-heure-fin").value = +hf*60 + +mf;
+  majPlage(null);
+  document.querySelectorAll(".puce").forEach(p=>p.classList.remove("active"));
+  puce.classList.add("active");
+  sauverBrouillon();
+}
+window.addEventListener("DOMContentLoaded", ()=>majPlage(null));
+
 /* ================= GÉOLOCALISATION ================= */
 let gps = null;
 function geolocaliser(){
   const aide = document.getElementById("geoloc-aide");
   const btn = document.getElementById("btn-geoloc");
   if(!navigator.geolocation){ aide.textContent = "Géolocalisation non disponible sur cet appareil."; return; }
-  btn.disabled = true; aide.textContent = "Recherche de la position…";
-  navigator.geolocation.getCurrentPosition(pos=>{
-    gps = { lat: +pos.coords.latitude.toFixed(6), lon: +pos.coords.longitude.toFixed(6),
-            precision: Math.round(pos.coords.accuracy) };
+  btn.disabled = true; aide.textContent = "Recherche de la position (le GPS s'affine pendant quelques secondes)…";
+
+  let meilleure = null, surveillant = null, minuteur = null;
+
+  function terminer(){
+    navigator.geolocation.clearWatch(surveillant); clearTimeout(minuteur);
+    btn.disabled = false;
+    if(!meilleure){ aide.textContent = "Position indisponible — vérifier les autorisations du navigateur."; return; }
+    gps = { lat: +meilleure.coords.latitude.toFixed(6), lon: +meilleure.coords.longitude.toFixed(6),
+            precision: Math.round(meilleure.coords.accuracy) };
+    const avert = gps.precision > 100
+      ? " Précision faible (test sur ordinateur ?) — sur téléphone en extérieur, compter ±5 à 15 m."
+      : "";
     fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${gps.lat}&lon=${gps.lon}&accept-language=fr`)
       .then(r=>r.json())
       .then(rep=>{
@@ -630,12 +920,17 @@ function geolocaliser(){
                           [a.postcode, a.village || a.town || a.city].filter(Boolean).join(" ") ]
                         .filter(Boolean).join(", ");
         if(adresse) document.getElementById("eu-adresse").value = adresse;
-        aide.textContent = `Position relevée (précision ±${gps.precision} m) — vérifier l'adresse proposée.`;
+        aide.textContent = `Position relevée (précision ±${gps.precision} m) — vérifier l'adresse proposée.` + avert;
       })
-      .catch(()=>{ aide.textContent = `Position GPS relevée (±${gps.precision} m), adresse à saisir manuellement.`; })
-      .finally(()=>{ btn.disabled = false; });
-  }, ()=>{ btn.disabled = false; aide.textContent = "Position refusée ou indisponible — vérifier les autorisations du navigateur."; },
-  { enableHighAccuracy:true, timeout:12000 });
+      .catch(()=>{ aide.textContent = `Position GPS relevée (±${gps.precision} m), adresse à saisir manuellement.` + avert; });
+  }
+
+  surveillant = navigator.geolocation.watchPosition(pos=>{
+    if(!meilleure || pos.coords.accuracy < meilleure.coords.accuracy) meilleure = pos;
+    if(pos.coords.accuracy <= 20) terminer(); // assez précis : on s'arrête tôt
+  }, ()=>{ terminer(); }, { enableHighAccuracy:true, timeout:15000, maximumAge:0 });
+
+  minuteur = setTimeout(terminer, 10000); // au plus 10 s d'affinage
 }
 
 /* ================= PHOTO DU SST ================= */
@@ -678,13 +973,15 @@ function sauverBrouillon(){
       document.querySelectorAll('#risques-attila input[type=checkbox]').forEach(cb=>{
         risques[cb.dataset.id] = cb.checked;
       });
+      const cases = {};
+      document.querySelectorAll('.nature-case input, .case-puce input').forEach(cb=>{ cases[cb.id] = cb.checked; });
       const clients = [...document.querySelectorAll(".ligne-client")].map(l=>({
         risque:l.querySelector(".rc-risque").value,
         regle:l.querySelector(".rc-regle").value,
         action:l.querySelector(".rc-action").value,
         mesures:[...l.querySelectorAll(".rc-mesure")].map(m=>m.value)
       }));
-      localStorage.setItem(CLE_BROUILLON, JSON.stringify({champs, risques, clients, ts: Date.now()}));
+      localStorage.setItem(CLE_BROUILLON, JSON.stringify({champs, risques, cases, clients, ts: Date.now()}));
     }catch(e){ /* stockage local indisponible : on continue sans brouillon */ }
   }, 800);
 }
@@ -698,6 +995,10 @@ function restaurerBrouillon(){
   Object.entries(b.champs).forEach(([id, val])=>{
     const el = document.getElementById(id);
     if(el && val) el.value = val;
+  });
+  Object.entries(b.cases || {}).forEach(([id, coche])=>{
+    const cb = document.getElementById(id);
+    if(cb) cb.checked = coche;
   });
   Object.entries(b.risques || {}).forEach(([id, coche])=>{
     const cb = document.querySelector(`input[data-id="${id}"]`);
@@ -729,7 +1030,7 @@ function effacerBrouillon(){
   try{ localStorage.removeItem(CLE_BROUILLON); }catch(e){}
   location.reload();
 }
-window.addEventListener("DOMContentLoaded", restaurerBrouillon);
+window.addEventListener("DOMContentLoaded", ()=>{ restaurerProfil(); restaurerBrouillon(); majPlage(null); });
 
 /* ================= SIGNATURES ================= */
 function initSignature(id){
@@ -797,12 +1098,17 @@ function valider(){
       representant:v("ee-rep"), email:v("ee-mail"), effectif:v("ee-effectif")
     },
     operation: {
-      nature:v("op-nature"), debut:v("op-debut"), fin:v("op-fin"),
-      lieu:v("op-lieu"), horaires:v("op-horaires")
+      nature:[...document.querySelectorAll(".nature-case input:checked")].map(c=>c.value)
+             .concat(v("op-nature-autre") ? [v("op-nature-autre")] : []).join(" — ") || "Non précisée",
+      debut:v("op-debut"), fin:v("op-fin"),
+      lieu:puces("lieu").concat(v("op-lieu") ? [v("op-lieu")] : []).join(", "),
+      horaires:"de " + minutesEnHeure(v("op-heure-debut")) + " à " + minutesEnHeure(v("op-heure-fin"))
+
     },
     inspectionCommune: {
       date:v("ic-date"), heure:v("ic-heure"),
-      participants:v("ic-participants"), observations:v("ic-obs")
+      participants:v("ic-participants"),
+      observations:puces("obs").concat(v("ic-obs") ? [v("ic-obs")] : []).join(". ")
     },
     risquesAttila: RISQUES_ATTILA
       .filter(r=>document.querySelector(`input[data-id="${r.id}"]`).checked)
@@ -817,8 +1123,9 @@ function valider(){
     geolocalisation: gps,
     secours: {
       sst:v("sec-sst"), photoSst:photoSst, urgence:v("sec-urgence"),
-      rassemblement:v("sec-rassemblement"), acces:v("sec-acces"),
-      consignes:v("sec-consignes")
+      rassemblement:puces("ras").concat(v("sec-rassemblement") ? [v("sec-rassemblement")] : []).join(" — "),
+      acces:v("sec-acces"),
+      consignes:puces("cons").concat(v("sec-consignes") ? [v("sec-consignes")] : []).join(". ")
     },
     signatures: {
       euNom:v("sig-eu-nom"), euImage:document.getElementById("sig-eu").toDataURL("image/png"),
@@ -843,6 +1150,7 @@ function valider(){
   .then(r=>r.json())
   .then(rep=>{
     statut.className = "statut ok";
+    sauverProfil();
     try{ localStorage.removeItem(CLE_BROUILLON); }catch(e){}
     statut.textContent = "Plan de prévention horodaté le " + rep.horodatage +
       " (réf. " + rep.reference + "). PDF envoyé à " + donnees.entrepriseUtilisatrice.email +
