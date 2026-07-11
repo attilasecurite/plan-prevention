@@ -335,7 +335,10 @@ selAgence.appendChild(oAutre);
 selAgence.addEventListener("change", ()=>{
   const aide = document.getElementById("ee-agence-aide");
   const slug = selAgence.value;
-  if(!slug || slug==="autre"){ return; }
+  // Changement d'agence = remise à zéro des coordonnées précédentes
+  document.getElementById("ee-adresse").value = "";
+  document.getElementById("ee-mail").value = "";
+  if(!slug || slug==="autre"){ aide.textContent = "Saisir les coordonnées de l'agence manuellement."; return; }
   if(!URL_APPS_SCRIPT){
     aide.textContent = "Adresse automatique disponible une fois l'URL Apps Script configurée.";
     return;
@@ -345,7 +348,7 @@ selAgence.addEventListener("change", ()=>{
     .then(r=>r.json())
     .then(rep=>{
       if(rep.adresse) document.getElementById("ee-adresse").value = rep.adresse;
-      if(rep.email && !document.getElementById("ee-mail").value) document.getElementById("ee-mail").value = rep.email;
+      if(rep.email) document.getElementById("ee-mail").value = rep.email;
       aide.textContent = rep.adresse
         ? "Coordonnées récupérées depuis l'annuaire — vérifier et corriger si besoin."
         : "Agence absente de l'annuaire : saisir l'adresse manuellement.";
