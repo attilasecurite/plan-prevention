@@ -283,7 +283,7 @@
 
 <!-- ================= 4. RISQUES ATTILA PRÉ-ÉVALUÉS ================= -->
 <section>
-  <div class="cartouche-titre"><span class="num">4</span> Risques liés à l'intervention ATTILA <span style="font-weight:400;font-size:12.5px">(pré-évalués — cocher ceux applicables)</span></div>
+  <div class="cartouche-titre"><span class="num">4</span> Phases d'activité dangereuses et risques de l'intervention ATTILA <span style="font-weight:400;font-size:12.5px">(art. R.&nbsp;4512-8 — pré-évalués, cocher les phases applicables)</span></div>
   <div class="corps">
     <div class="droit-retrait">
       <h3><svg width="22" height="22" viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#C0392B"/><path d="M20 10v13" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="20" cy="29.5" r="2.6" fill="#fff"/></svg>Droit de retrait — la sécurité d'abord, toujours</h3>
@@ -363,7 +363,9 @@
 <!-- ================= 8. SIGNATURES ================= -->
 <section>
   <div class="cartouche-titre"><span class="num">8</span> Validation et signatures</div>
-  <div class="corps grille">
+  <div class="corps">
+    <p class="aide" style="margin-bottom:12px">Les données saisies (identités, signatures, photos, position GPS) sont collectées aux seules fins d'établissement et de traçabilité réglementaire du plan de prévention, conservées pendant la durée de l'opération puis 5 ans, et accessibles sur demande auprès de l'agence ATTILA signataire.</p>
+    <div class="grille">
     <div class="sig-bloc">
       <div class="colonne-entete">Entreprise utilisatrice</div>
       <div class="champ"><label for="sig-eu-nom">Nom et fonction du signataire</label><input type="text" id="sig-eu-nom">
@@ -385,6 +387,7 @@
         <span class="mention">Signature manuscrite (doigt ou souris)</span>
         <button type="button" class="sig-effacer" onclick="effacer('sig-ee')">Effacer</button>
       </div>
+    </div>
     </div>
   </div>
 </section>
@@ -560,7 +563,7 @@ const RISQUES_ATTILA = [
   {
     id:"amiante", coche:false,
     titre:"Exposition à l'amiante / toiture fragile (intervention SS4)",
-    regle:"Aucune intervention sur matériaux susceptibles de contenir de l'amiante sans repérage avant travaux (RAT) transmis par le donneur d'ordre. Toiture fibrociment = toiture fragile : mise en place OBLIGATOIRE de Sécuriplac (dispositif de circulation sur toitures fragiles), avec EPI antichute et ancrage obligatoires pour tout cheminement.",
+    regle:"Aucune intervention sur matériaux susceptibles de contenir de l'amiante sans repérage avant travaux (RAT) et communication du dossier technique amiante (DTA) du bâtiment par le donneur d'ordre. Toiture fibrociment = toiture fragile : mise en place OBLIGATOIRE de Sécuriplac (dispositif de circulation sur toitures fragiles), avec EPI antichute et ancrage obligatoires pour tout cheminement.",
     action:"Application du mode opératoire SS4 de l'entreprise, travail à l'humide, aspiration THE, conditionnement des déchets en double emballage étiqueté, traçabilité Trackdéchets (BSDA). Évaluation systématique du besoin en protections collectives (filet sous toiture ou équivalent) dès que la réparation est importante en volume ou répétée en fréquence.",
     moyens:"Sécuriplac + harnais ancré (obligatoires), personnel formé SS4, combinaisons type 5, APR (demi-masque P3 minimum), sacs déchets amiante étiquetés, aspirateur THE, filet sous toiture si l'évaluation le requiert."
   },
@@ -928,7 +931,22 @@ function geolocaliser(){
   surveillant = navigator.geolocation.watchPosition(pos=>{
     if(!meilleure || pos.coords.accuracy < meilleure.coords.accuracy) meilleure = pos;
     if(pos.coords.accuracy <= 20) terminer(); // assez précis : on s'arrête tôt
-  }, ()=>{ terminer(); }, { enableHighAccuracy:true, timeout:15000, maximumAge:0 });
+  }, err=>{
+    navigator.geolocation.clearWatch(surveillant); clearTimeout(minuteur);
+    if(err.code === 1){ // autorisation refusée
+      btn.disabled = false;
+      aide.textContent = "Autorisation refusée. Sur iPhone : bouton aA dans la barre d'adresse → Réglages du site web → Position → Autoriser, puis recharger. Vérifier aussi Réglages → Confidentialité → Service de localisation → Sites web Safari.";
+      return;
+    }
+    // Position indisponible ou délai dépassé : repli en localisation réseau (moins précise)
+    aide.textContent = "GPS indisponible, tentative en localisation réseau…";
+    navigator.geolocation.getCurrentPosition(pos=>{
+      meilleure = pos; terminer();
+    }, ()=>{
+      btn.disabled = false;
+      aide.textContent = "Position introuvable — vérifier que le service de localisation du téléphone est activé, ou saisir l'adresse manuellement.";
+    }, { enableHighAccuracy:false, timeout:8000, maximumAge:60000 });
+  }, { enableHighAccuracy:true, timeout:15000, maximumAge:0 });
 
   minuteur = setTimeout(terminer, 10000); // au plus 10 s d'affinage
 }
@@ -1077,6 +1095,8 @@ function valider(){
   if(!v("eu-mail")) manquants.push("e-mail du client");
   if(!selAgence.value) manquants.push("agence ATTILA");
   if(!v("ee-mail")) manquants.push("e-mail de l'agence");
+  if(!v("ic-date")) manquants.push("date de l'inspection commune préalable (obligatoire avant signature)");
+  if(puces("obs").length === 0 && !v("ic-obs")) manquants.push("au moins une observation d'inspection commune (le plan doit refléter l'analyse du site)");
   if(!document.getElementById("sig-eu").dataset.signe) manquants.push("signature du client");
   if(!document.getElementById("sig-ee").dataset.signe) manquants.push("signature ATTILA");
   if(manquants.length){
