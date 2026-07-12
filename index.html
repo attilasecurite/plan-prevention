@@ -152,6 +152,9 @@
 </div>
 
 <main>
+<div style="text-align:right;margin-top:10px">
+  <button type="button" class="btn-mini" onclick="formulaireVierge()">&#8635; Formulaire vierge</button>
+</div>
 <div class="bandeau-brouillon" id="bandeau-brouillon">
   &#128190; Brouillon restauré (<span id="brouillon-heure"></span>) — photos et signatures sont à refaire.
   <button type="button" onclick="effacerBrouillon()">Repartir de zéro</button>
@@ -1046,6 +1049,11 @@ function restaurerBrouillon(){
 }
 function effacerBrouillon(){
   try{ localStorage.removeItem(CLE_BROUILLON); }catch(e){}
+  location.reload();
+}
+function formulaireVierge(){
+  if(!confirm("Repartir d'un formulaire totalement vierge ?\nLe brouillon en cours et le profil mémorisé de l'équipe seront effacés.")) return;
+  try{ localStorage.removeItem(CLE_BROUILLON); localStorage.removeItem(CLE_PROFIL); }catch(e){}
   location.reload();
 }
 window.addEventListener("DOMContentLoaded", ()=>{ restaurerProfil(); restaurerBrouillon(); majPlage(null); });
