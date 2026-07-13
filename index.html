@@ -87,6 +87,12 @@
   .stepper button:first-child{border-radius:5px 0 0 5px}
   .stepper button:last-child{border-radius:0 5px 5px 0}
   .stepper input{width:64px;height:42px;text-align:center;border-radius:0;border-left:none;border-right:none;font-size:17px;font-weight:700}
+  .equipe-ligne{display:flex;align-items:center;gap:10px;border:1px solid var(--ligne);border-radius:5px;padding:8px 10px;margin-top:8px;background:var(--fond-doux)}
+  .equipe-ligne .eq-num{font-family:Cambria,serif;font-weight:700;color:var(--rouge);font-size:15px;width:18px;flex-shrink:0}
+  .equipe-ligne input[type=text]{flex:1}
+  .photo-mini{width:46px;height:46px;object-fit:cover;border-radius:50%;border:2px solid var(--rouge);display:none;flex-shrink:0}
+  .btn-photo{background:#fff;border:1.5px solid var(--rouge);color:var(--rouge);border-radius:5px;font-size:16px;width:44px;height:44px;cursor:pointer;flex-shrink:0}
+  .rep-photo{display:flex;align-items:center;gap:10px;margin-top:6px}
   .urgences-fixes{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
   .urgences-fixes span{background:#fdf6f5;border:1.5px solid var(--rouge);border-radius:5px;padding:5px 11px;font-size:12.5px;color:var(--encre);white-space:nowrap}
   .urgences-fixes b{color:var(--rouge);font-family:Cambria,serif;font-size:16px;margin-right:4px}
@@ -171,7 +177,14 @@
         <button type="button" class="btn-geoloc" id="btn-geoloc" onclick="geolocaliser()">&#128205; Utiliser ma position</button>
         <div class="aide" id="geoloc-aide">Remplit l'adresse depuis le GPS du téléphone et joint les coordonnées au plan (preuve d'établissement sur site).</div>
       </div>
-      <div class="champ"><label for="eu-rep">Représentant (nom, fonction)</label><input type="text" id="eu-rep"></div>
+      <div class="champ"><label for="eu-rep">Représentant (nom, fonction)</label><input type="text" id="eu-rep">
+        <div class="rep-photo">
+          <img class="photo-mini" id="apercu-rep-eu" alt="Photo représentant client">
+          <input type="file" id="photo-rep-eu" accept="image/*" style="display:none" onchange="chargerPhotoRep(this,'eu')">
+          <button type="button" class="btn-photo" onclick="document.getElementById('photo-rep-eu').click()" title="Photo de l'interlocuteur">&#128247;</button>
+          <span class="aide" style="margin:0">Photo de l'interlocuteur (optionnelle)</span>
+        </div>
+      </div>
       <div class="champ"><label for="eu-mail">E-mail (envoi du plan signé)</label><input type="email" id="eu-mail" required></div>
       <div class="champ"><label for="eu-tel">Téléphone</label><input type="tel" id="eu-tel" inputmode="tel"></div>
     </fieldset>
@@ -183,7 +196,14 @@
         <div class="aide" id="ee-agence-aide">L'adresse se remplit automatiquement à la sélection (modifiable).</div>
       </div>
       <div class="champ"><label for="ee-adresse">Adresse de l'agence</label><input type="text" id="ee-adresse"></div>
-      <div class="champ"><label for="ee-rep">Représentant (nom, fonction)</label><input type="text" id="ee-rep"></div>
+      <div class="champ"><label for="ee-rep">Représentant (nom, fonction)</label><input type="text" id="ee-rep">
+        <div class="rep-photo">
+          <img class="photo-mini" id="apercu-rep-ee" alt="Photo représentant ATTILA">
+          <input type="file" id="photo-rep-ee" accept="image/*" style="display:none" onchange="chargerPhotoRep(this,'ee')">
+          <button type="button" class="btn-photo" onclick="document.getElementById('photo-rep-ee').click()" title="Photo de l'interlocuteur">&#128247;</button>
+          <span class="aide" style="margin:0">Photo de l'interlocuteur (optionnelle)</span>
+        </div>
+      </div>
       <div class="champ"><label for="ee-mail">E-mail (copie du plan signé)</label><input type="email" id="ee-mail" required></div>
       <div class="champ"><label for="ee-effectif">Effectif prévu sur site</label>
         <div class="stepper">
@@ -191,6 +211,8 @@
           <input type="number" id="ee-effectif" value="2" min="1" max="30" inputmode="numeric">
           <button type="button" onclick="pas('ee-effectif',1)">+</button>
         </div>
+        <div id="equipe-liste"></div>
+        <div class="aide">Une ligne par intervenant : nom prénom + photo (optionnelle), repris dans le plan.</div>
       </div>
     </fieldset>
   </div>
@@ -750,6 +772,7 @@ function ajouterRisqueType(i){
 function pas(id, delta){
   const el = document.getElementById(id);
   el.value = Math.min(+el.max || 99, Math.max(+el.min || 0, (+el.value || 0) + delta));
+  if(id === "ee-effectif") majEquipe();
   sauverBrouillon();
 }
 function inspectionMaintenant(){
@@ -775,7 +798,8 @@ function sauverProfil(){
   try{
     localStorage.setItem(CLE_PROFIL, JSON.stringify({
       agence:selAgence.value, adresse:v("ee-adresse"), mail:v("ee-mail"),
-      rep:v("ee-rep"), effectif:v("ee-effectif"), sst:v("sec-sst"), signataire:v("sig-ee-nom")
+      rep:v("ee-rep"), effectif:v("ee-effectif"), sst:v("sec-sst"), signataire:v("sig-ee-nom"),
+      equipe: equipe.map(m=>m.nom)
     }));
   }catch(e){}
 }
@@ -790,6 +814,7 @@ function restaurerProfil(){
     const el = document.getElementById(id);
     if(el && val && !el.value) el.value = val;
   });
+  if(p.equipe && p.equipe.length && !equipe.length){ equipe = p.equipe.map(nom=>({nom:nom||"", photo:""})); }
   if(p.agence) document.getElementById("ee-agence-aide").textContent = "Profil de l'équipe restauré — coordonnées du dernier plan envoyé.";
 }
 
@@ -954,6 +979,71 @@ function geolocaliser(){
   minuteur = setTimeout(terminer, 10000); // au plus 10 s d'affinage
 }
 
+/* ================= COMPRESSION D'IMAGE COMMUNE ================= */
+function comprimerImage(fichier, maxPx, rappel){
+  const lecteur = new FileReader();
+  lecteur.onload = ev=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const e = Math.min(1, maxPx / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width*e); c.height = Math.round(img.height*e);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      rappel(c.toDataURL("image/jpeg", 0.72));
+    };
+    img.src = ev.target.result;
+  };
+  lecteur.readAsDataURL(fichier);
+}
+
+/* ================= PHOTOS DES INTERLOCUTEURS ================= */
+const photosRep = { eu:"", ee:"" };
+function chargerPhotoRep(input, qui){
+  if(!input.files.length) return;
+  comprimerImage(input.files[0], 400, donnees=>{
+    photosRep[qui] = donnees;
+    const ap = document.getElementById("apercu-rep-" + qui);
+    ap.src = donnees; ap.style.display = "block";
+  });
+  input.value = "";
+}
+
+/* ================= ÉQUIPE INTERVENANTE (liée à l'effectif) ================= */
+let equipe = [];
+function majEquipe(){
+  const n = Math.min(30, Math.max(0, +document.getElementById("ee-effectif").value || 0));
+  while(equipe.length < n) equipe.push({nom:"", photo:""});
+  equipe.length = n;
+  rendreEquipe();
+}
+function rendreEquipe(){
+  const cont = document.getElementById("equipe-liste");
+  cont.innerHTML = "";
+  equipe.forEach((m, i)=>{
+    const l = document.createElement("div");
+    l.className = "equipe-ligne";
+    l.innerHTML = `
+      <span class="eq-num">${i+1}</span>
+      <img class="photo-mini" ${m.photo ? `src="${m.photo}" style="display:block"` : ""} alt="Photo intervenant ${i+1}">
+      <input type="text" placeholder="Nom Prénom" value="${(m.nom||"").replace(/"/g,"&quot;")}">
+      <input type="file" accept="image/*" style="display:none">
+      <button type="button" class="btn-photo" title="Photo de l'intervenant">&#128247;</button>`;
+    l.querySelector("input[type=text]").addEventListener("input", e=>{ m.nom = e.target.value; sauverBrouillon(); });
+    const fichier = l.querySelector("input[type=file]");
+    l.querySelector(".btn-photo").addEventListener("click", ()=>fichier.click());
+    fichier.addEventListener("change", ()=>{
+      if(!fichier.files.length) return;
+      comprimerImage(fichier.files[0], 400, donnees=>{
+        m.photo = donnees;
+        const ap = l.querySelector(".photo-mini");
+        ap.src = donnees; ap.style.display = "block";
+      });
+      fichier.value = "";
+    });
+    cont.appendChild(l);
+  });
+}
+
 /* ================= PHOTO DU SST ================= */
 let photoSst = "";
 function chargerPhotoSst(fichiers){
@@ -1002,7 +1092,7 @@ function sauverBrouillon(){
         action:l.querySelector(".rc-action").value,
         mesures:[...l.querySelectorAll(".rc-mesure")].map(m=>m.value)
       }));
-      localStorage.setItem(CLE_BROUILLON, JSON.stringify({champs, risques, cases, clients, ts: Date.now()}));
+      localStorage.setItem(CLE_BROUILLON, JSON.stringify({champs, risques, cases, clients, equipe: equipe.map(m=>m.nom), ts: Date.now()}));
     }catch(e){ /* stockage local indisponible : on continue sans brouillon */ }
   }, 800);
 }
@@ -1042,6 +1132,7 @@ function restaurerBrouillon(){
       });
     });
   }
+  if(b.equipe && b.equipe.length){ equipe = b.equipe.map(nom=>({nom:nom||"", photo:""})); }
   const d = new Date(b.ts);
   document.getElementById("brouillon-heure").textContent =
     d.toLocaleDateString("fr-FR") + " à " + d.toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit"});
@@ -1056,7 +1147,7 @@ function formulaireVierge(){
   try{ localStorage.removeItem(CLE_BROUILLON); localStorage.removeItem(CLE_PROFIL); }catch(e){}
   location.reload();
 }
-window.addEventListener("DOMContentLoaded", ()=>{ restaurerProfil(); restaurerBrouillon(); majPlage(null); });
+window.addEventListener("DOMContentLoaded", ()=>{ restaurerProfil(); restaurerBrouillon(); majPlage(null); majEquipe(); });
 
 /* ================= SIGNATURES ================= */
 function initSignature(id){
@@ -1104,7 +1195,6 @@ function valider(){
   if(!selAgence.value) manquants.push("agence ATTILA");
   if(!v("ee-mail")) manquants.push("e-mail de l'agence");
   if(!v("ic-date")) manquants.push("date de l'inspection commune préalable (obligatoire avant signature)");
-  if(puces("obs").length === 0 && !v("ic-obs")) manquants.push("au moins une observation d'inspection commune (le plan doit refléter l'analyse du site)");
   if(!document.getElementById("sig-eu").dataset.signe) manquants.push("signature du client");
   if(!document.getElementById("sig-ee").dataset.signe) manquants.push("signature ATTILA");
   if(manquants.length){
@@ -1119,11 +1209,12 @@ function valider(){
     horodatageClient: new Date().toISOString(),
     entrepriseUtilisatrice: {
       nom:v("eu-nom"), adresse:v("eu-adresse"), representant:v("eu-rep"),
-      email:v("eu-mail"), tel:v("eu-tel")
+      photoRep:photosRep.eu, email:v("eu-mail"), tel:v("eu-tel")
     },
     entrepriseExterieure: {
       agence:nomAgence, slug:selAgence.value, adresse:v("ee-adresse"),
-      representant:v("ee-rep"), email:v("ee-mail"), effectif:v("ee-effectif")
+      representant:v("ee-rep"), photoRep:photosRep.ee, email:v("ee-mail"), effectif:v("ee-effectif"),
+      equipe: equipe.filter(m=>m.nom || m.photo).map(m=>({nom:m.nom, photo:m.photo}))
     },
     operation: {
       nature:[...document.querySelectorAll(".nature-case input:checked")].map(c=>c.value)
